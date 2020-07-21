@@ -104,7 +104,7 @@ stages:
               displayName: "Deploy Resource Group"
               inputs:
                 deploymentScope: 'Resource Group'
-                azureResourceManagerConnection: $${{ parameters.RESOURCE_MANAGER_CONNECTION}}
+                azureResourceManagerConnection: ${{ parameters.RESOURCE_MANAGER_CONNECTION}}
                 subscriptionId: ${{ parameters.SUBSCRIPTION_ID }}
                 action: 'Create Or Update Resource Group'
                 resourceGroupName: ${{ parameters.RESOURCE_GROUP }}
@@ -120,7 +120,7 @@ stages:
               displayName: "Deploy Databricks ARM Template"
               inputs:
                 deploymentScope: 'Resource Group'
-                azureResourceManagerConnection: $${{ parameters.RESOURCE_MANAGER_CONNECTION}}
+                azureResourceManagerConnection: ${{ parameters.RESOURCE_MANAGER_CONNECTION}}
                 subscriptionId: ${{ parameters.SUBSCRIPTION_ID }}
                 action: 'Create Or Update Resource Group'
                 resourceGroupName: ${{ parameters.RESOURCE_GROUP }}
