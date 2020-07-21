@@ -100,6 +100,7 @@ stages:
                 targetType: 'inline'
                 script: 'dir env:'
 
+            ## You could remove this if your resource group is provisioned by IT ##
             - task: AzureResourceManagerTemplateDeployment@3
               displayName: "Deploy Resource Group"
               inputs:
