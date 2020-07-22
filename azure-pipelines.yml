@@ -32,7 +32,7 @@ parameters:
 - name: WORKSPACE_NAME
   displayName: Databricks workspace name
   type: string
-  default: 'databricks-devops'
+  default: 'Databricks-Workspace-DevOps'
 
 - name: SUBSCRIPTION_ID
   displayName: Azure Subscription Id
@@ -100,21 +100,6 @@ stages:
                 targetType: 'inline'
                 script: 'dir env:'
 
-            - task: AzureResourceManagerTemplateDeployment@3
-              displayName: "Deploy Resource Group"
-              inputs:
-                deploymentScope: 'Resource Group'
-                azureResourceManagerConnection: ${{ parameters.RESOURCE_MANAGER_CONNECTION}}
-                subscriptionId: ${{ parameters.SUBSCRIPTION_ID }}
-                action: 'Create Or Update Resource Group'
-                resourceGroupName: ${{ parameters.RESOURCE_GROUP }}
-                location: ${{ parameters.LOCATION }}
-                templateLocation: 'Linked artifact'
-                csmFile: '$(Pipeline.Workspace)/ARM-Templates/azuredeploy.resourcegroup.json'
-                csmParametersFile: '$(Pipeline.Workspace)/ARM-Templates/parameters.resourcegroup.json'
-                overrideParameters: '-name ${{ parameters.RESOURCE_GROUP }}-${{ parameters.ENVIRONMENT }} -location ${{ parameters.LOCATION }}'
-                deploymentMode: 'Incremental'
-
 
             - task: AzureResourceManagerTemplateDeployment@3
               displayName: "Deploy Databricks ARM Template"
@@ -123,7 +108,7 @@ stages:
                 azureResourceManagerConnection: ${{ parameters.RESOURCE_MANAGER_CONNECTION}}
                 subscriptionId: ${{ parameters.SUBSCRIPTION_ID }}
                 action: 'Create Or Update Resource Group'
-                resourceGroupName: ${{ parameters.RESOURCE_GROUP }}
+                resourceGroupName: ${{ parameters.RESOURCE_GROUP }}-${{ parameters.ENVIRONMENT }}
                 location: ${{ parameters.LOCATION }}
                 templateLocation: 'Linked artifact'
                 csmFile: '$(Pipeline.Workspace)/ARM-Templates/azuredeploy.databricks.json'
