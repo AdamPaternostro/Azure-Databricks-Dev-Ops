@@ -18,7 +18,7 @@ parameters:
 - name: RESOURCE_GROUP
   displayName: Resource Group Name
   type: string
-  default: 'Azure-Databricks-Dev-Ops'
+  default: 'Databricks-MyProject'
   
 - name: LOCATION
   displayName: Azure Region
@@ -32,13 +32,15 @@ parameters:
 - name: WORKSPACE_NAME
   displayName: Databricks workspace name
   type: string
-  default: 'Databricks-Workspace-DevOps'
+  default: 'Databricks-MyProject'
 
 - name: SUBSCRIPTION_ID
   displayName: Azure Subscription Id
   type: string
   default: '00000000-0000-0000-0000-000000000000'
 
+  # NOTE: You could make this a variable and then change the name to append the environment parameter above.  You would need to create a corrisponding service connection
+  # e.g. If you connection is named "MyConnection", you would have MyConnection-Dev (for dev subscription), MyConnection-QA (etc...)
 - name: RESOURCE_MANAGER_CONNECTION
   displayName: Azure Resource Connection Name
   type: string
@@ -72,8 +74,8 @@ stages:
       - task: PublishBuildArtifacts@1
         displayName: 'Publish Artifact: Databricks-Clusters'
         inputs:
-          PathtoPublish: '$(Build.Repository.LocalPath)/Databricks-Clusters'
-          ArtifactName: 'Databricks-Clusters'
+          PathtoPublish: '$(Build.Repository.LocalPath)/clusters'
+          ArtifactName: 'clusters'
 
 
 #############################################################
