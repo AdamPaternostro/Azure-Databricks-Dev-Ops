@@ -6,14 +6,25 @@
 trigger: none
 
 parameters:
-- name: ENVIRONMENT
-  displayName: Environment
+- name: DATABRICKS_TOKEN
+  displayName: DATABRICKS_TOKEN
   type: string
-  default: Dev
-  values:
-  - Dev
-  - QA
-  - Prod
+  default: '000000'
+
+- name: DATABRICKS_URL
+  displayName: Databricks URL
+  type: string
+  default: 'adb-5946405904802522.2.azuredatabricks.net'
+
+- name: NOTEBOOK_PATH
+  displayName: Notebooks Relative Path
+  type: string
+  default: 'notebooks/MyProject'
+
+- name: NOTEBOOK_DEPLOYMENT_PATH
+  displayName: Notebooks Deployment Path
+  type: string
+  default: '/Users/user@domain.com'
 
 - name: RESOURCE_GROUP
   displayName: Resource Group Name
@@ -77,6 +88,18 @@ stages:
           PathtoPublish: '$(Build.Repository.LocalPath)/clusters'
           ArtifactName: 'clusters'
 
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Artifact: Databricks-Notebooks'
+        inputs:
+          PathtoPublish: '$(Build.Repository.LocalPath)/notebooks'
+          ArtifactName: 'notebooks'
+
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Artifact: Databricks-Deployment-Scripts'
+        inputs:
+          PathtoPublish: '$(Build.Repository.LocalPath)/deployment-scripts'
+          ArtifactName: 'deployment-scripts'
+
 
 #############################################################
 # Deploy to Dev
@@ -110,10 +133,25 @@ stages:
                 azureResourceManagerConnection: ${{ parameters.RESOURCE_MANAGER_CONNECTION}}
                 subscriptionId: ${{ parameters.SUBSCRIPTION_ID }}
                 action: 'Create Or Update Resource Group'
-                resourceGroupName: ${{ parameters.RESOURCE_GROUP }}-${{ parameters.ENVIRONMENT }}
+                resourceGroupName: ${{ parameters.RESOURCE_GROUP }}-Dev
                 location: ${{ parameters.LOCATION }}
                 templateLocation: 'Linked artifact'
                 csmFile: '$(Pipeline.Workspace)/ARM-Templates/azuredeploy.databricks.json'
                 csmParametersFile: '$(Pipeline.Workspace)/ARM-Templates/parameters.databricks.json'
-                overrideParameters: '-workspaceName ${{ parameters.WORKSPACE_NAME }}-${{ parameters.ENVIRONMENT }}'
+                overrideParameters: '-workspaceName ${{ parameters.WORKSPACE_NAME }}-Dev'
                 deploymentMode: 'Incremental'
+
+            - task: Bash@3
+              displayName: "Deploy Databricks Notebooks"
+              inputs:
+                filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-notebooks.sh'
+                arguments: '${{ parameters.DATABRICKS_TOKEN }} ${{ parameters.DATABRICKS_URL }} ${{ parameters.NOTEBOOK_DEPLOYMENT_PATH }}'
+                workingDirectory: '$(Pipeline.Workspace)/${{ parameters.NOTEBOOK_PATH }}'
+
+            - task: Bash@3
+              displayName: "Deploy Databricks Clusters"
+              inputs:
+                filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-clusters.sh'
+                arguments: '${{ parameters.DATABRICKS_TOKEN }} ${{ parameters.DATABRICKS_URL }}'
+                workingDirectory: '$(Pipeline.Workspace)/clusters'
+
