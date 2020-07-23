@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# TO DO
+# You might want to Pin your clusters
+
 # Must be run in the directory with the notebooks (spaces in names in Bash can cause issues)
 token=$1
 workspaceUrl=$2
@@ -15,9 +18,7 @@ clusterList=$(curl GET https://$workspaceUrl/api/2.0/clusters/list \
 find . -type f -name "*" -print0 | while IFS= read -r -d '' file; do
 
     echo "Processing file: $file"
-
     filename=${file//$replaceSource/$replaceDest}
-
     echo "New filename: $filename"
 
 
@@ -55,9 +56,49 @@ find . -type f -name "*" -print0 | while IFS= read -r -d '' file; do
          -H "Content-Type: application/json" \
          --data "$newJSON"
 
-    fi
-      
+    fi      
     echo ""  
 
 done
 
+# Sleep will the above calls complete
+# read -p "sleeping" -t 15
+
+# Get a list of clusters so we know if we need to create or edit
+clusterList=$(curl GET https://$workspaceUrl/api/2.0/clusters/list \
+             -H "Authorization: Bearer $token" \
+             -H "Content-Type: application/json")
+
+# Stop the clusters
+find . -type f -name "*" -print0 | while IFS= read -r -d '' file; do
+    echo "Processing file: $file"
+    filename=${file//$replaceSource/$replaceDest}
+    echo "New filename: $filename"
+
+    clusterName=$(cat $filename | jq -r .cluster_name)
+    clusterId=$(echo $clusterList | jq -r ".clusters[] | select(.cluster_name == \"$clusterName\") | .cluster_id")
+
+    echo "clusterName: $clusterName"
+    echo "clusterId: $clusterId"
+
+    # Test for empty cluster id (meaning it does not exist)
+    if [ -z "$clusterId" ];
+    then
+       echo "WARNING: Cluster $clusterName did not have a Cluster Id.  Stopping the cluster will not occur."
+
+    else
+       echo "Cluster $clusterName with Cluster ID $clusterId, Stopping..."
+       echo "curl https://$workspaceUrl/api/2.0/clusters/delete -d $clusterId"
+
+       newJSON="{ \"cluster_id\" : \"$clusterId\" }"
+       echo "Cluster to stop: $newJSON"
+   
+       # NOTE: permanent-delete is used to "delete" the cluster.  Delete below means "stop" the clustter
+       curl -X POST https://$workspaceUrl/api/2.0/clusters/delete \
+         -H "Authorization: Bearer $token" \
+         -H "Content-Type: application/json" \
+         --data "$newJSON"
+    fi     
+    echo ""  
+
+done

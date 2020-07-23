@@ -7,6 +7,15 @@ Complete end to end sample of doing DevOps with Azure Databricks.  This is based
 - Create a Databricks workspace in Azure named "Databricks-MyProject-WorkArea" in the above resource group
 
 
+## What Happens
+- Clusters are deployed
+    - New clusters created
+    - Existing clusters are updated
+    - Clusters are then Stopped (so either change this or understand they are stopped). You might get a cores quota warning, but we will stop the clusters anyway, so it might not be an issue
+- Notebooks are deployed
+    - The are deployed to the /Users folder?
+
+
 ## Setting up source control with your Databricks workspace to GitHub
 - The Databricks-MyProject-WorkArea workspace needs to be connnected to source control.
 - You can connect it by following the below instructions.
