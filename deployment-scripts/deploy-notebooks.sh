@@ -5,15 +5,44 @@ token=$1
 workspaceUrl=$2
 notebookPath=$3
 
+######################################################################################
+# Remove existing notebooks 
+######################################################################################
+JSON="{ \"path\" : \"$notebookPath/$filename\", \"recursive\": true }"
+echo "Delete Notebooks: $JSON"
+   
+echo "curl https://$workspaceUrl/api/2.0/workspace/delete -d $clusterId"
+
+curl -X POST https://$workspaceUrl/api/2.0/workspace/delete \
+    -H "Authorization: Bearer $token" \
+    -H "Content-Type: application/json" \
+    --data "$JSON"
+
+
+
+######################################################################################
+# Create path
+######################################################################################
+JSON="{ \"path\" : \"$notebookPath/$filename\" }"
+echo "Creating Path: $JSON"
+   
+echo "curl https://$workspaceUrl/api/2.0/workspace/mkdirs -d $clusterId"
+
+curl -X POST https://$workspaceUrl/api/2.0/workspace/mkdirs \
+    -H "Authorization: Bearer $token" \
+    -H "Content-Type: application/json" \
+    --data "$JSON"
+
+
+######################################################################################
+# Deploy notebooks
+######################################################################################
 replaceSource="./"
 replaceDest=""
 
 find . -type f -name "*" -print0 | while IFS= read -r -d '' file; do
-
     echo "Processing file: $file"
-
     filename=${file//$replaceSource/$replaceDest}
-
     echo "New filename: $filename"
 
     language=""
@@ -39,14 +68,12 @@ find . -type f -name "*" -print0 | while IFS= read -r -d '' file; do
 
     echo "curl -F language=$language -F path=$notebookPath/$filename -F content=@$filename https://$workspaceUrl/api/2.0/workspace/import"
 
-    curl -n \
+    curl -n https://$workspaceUrl/api/2.0/workspace/import  
       -H "Authorization: Bearer $token" \
       -F language="$language" \
       -F path="$notebookPath/$filename" \
-      -F content=@"$filename" \
-      https://$workspaceUrl/api/2.0/workspace/import  
+      -F content=@"$filename"       
 
     echo ""  
 
 done
-

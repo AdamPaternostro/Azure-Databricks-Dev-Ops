@@ -7,6 +7,10 @@
 token=$1
 workspaceUrl=$2
 
+######################################################################################
+# Deploy clusters (Add or Update existing)
+######################################################################################
+
 replaceSource="./"
 replaceDest=""
 
@@ -61,15 +65,22 @@ find . -type f -name "*" -print0 | while IFS= read -r -d '' file; do
 
 done
 
+
+######################################################################################
 # Sleep will the above calls complete
-# read -p "sleeping" -t 15
+######################################################################################
+read -p "sleeping" -t 15
+
+
+######################################################################################
+# Stop the clusters
+######################################################################################
 
 # Get a list of clusters so we know if we need to create or edit
 clusterList=$(curl GET https://$workspaceUrl/api/2.0/clusters/list \
              -H "Authorization: Bearer $token" \
              -H "Content-Type: application/json")
 
-# Stop the clusters
 find . -type f -name "*" -print0 | while IFS= read -r -d '' file; do
     echo "Processing file: $file"
     filename=${file//$replaceSource/$replaceDest}
