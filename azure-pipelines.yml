@@ -125,7 +125,6 @@ stages:
                 targetType: 'inline'
                 script: 'dir env:'
 
-
             - task: AzureResourceManagerTemplateDeployment@3
               displayName: "Deploy Databricks ARM Template"
               inputs:
@@ -155,3 +154,9 @@ stages:
                 arguments: '${{ parameters.DATABRICKS_TOKEN }} ${{ parameters.DATABRICKS_URL }}'
                 workingDirectory: '$(Pipeline.Workspace)/clusters'
 
+            - task: Bash@3
+              displayName: "Deploy Databricks Init Scripts"
+              inputs:
+                filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-init-scripts.sh'
+                arguments: '${{ parameters.DATABRICKS_TOKEN }} ${{ parameters.DATABRICKS_URL }}'
+                workingDirectory: '$(Pipeline.Workspace)/init-scripts'
