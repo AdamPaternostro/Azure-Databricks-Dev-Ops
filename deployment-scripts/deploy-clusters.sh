@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Must be run in the directory with the notebooks (spaces in names in Bash can cause issues)
+token=$1
+workspaceUrl=$2
+
+replaceSource="./"
+replaceDest=""
+
+# Get a list of clusters so we know if we need to create or edit
+clusterList=$(curl GET https://$workspaceUrl/api/2.0/clusters/list \
+             -H "Authorization: Bearer $token" \
+             -H "Content-Type: application/json")
+
+find . -type f -name "*" -print0 | while IFS= read -r -d '' file; do
+
+    echo "Processing file: $file"
+
+    filename=${file//$replaceSource/$replaceDest}
+
+    echo "New filename: $filename"
+
+
+    clusterName=$(cat $filename | jq -r .cluster_name)
+    clusterId=$(echo $clusterList | jq -r ".clusters[] | select(.cluster_name == \"$clusterName\") | .cluster_id")
+
+    echo "clusterName: $clusterName"
+    echo "clusterId: $clusterId"
+
+    # Test for empty cluster id (meaning it does not exist)
+    if [ -z "$clusterId" ];
+    then
+       echo "Cluster $clusterName does not exists in Databricks workspace, Creating..."
+       echo "curl https://$workspaceUrl/api/2.0/clusters/create -d $filename"
+
+       curl -X POST https://$workspaceUrl/api/2.0/clusters/create \
+         -H "Authorization: Bearer $token" \
+         -H "Content-Type: application/json" \
+         -d @"$filename" 
+
+    else
+       echo "Cluster $clusterName exists in Databricks workspace, Updating..."
+       echo "curl https://$workspaceUrl/api/2.0/clusters/edit -d $filename"
+
+       # need to inject some JSON into the file
+       clusterDef=$(cat $filename)
+
+       newJSON=$(echo $clusterDef | jq ". += {cluster_id: \"$clusterId\"}")
+       echo "New Cluster Def"
+       echo $newJSON
+       echo ""
+
+       curl -X POST https://$workspaceUrl/api/2.0/clusters/edit \
+         -H "Authorization: Bearer $token" \
+         -H "Content-Type: application/json" \
+         --data "$newJSON"
+
+    fi
+      
+    echo ""  
+
+done
+

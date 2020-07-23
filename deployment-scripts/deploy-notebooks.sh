@@ -1,21 +1,52 @@
 #!/bin/bash
 
+# Must be run in the directory with the notebooks (spaces in names in Bash can cause issues)
 token=$1
-path=$2
-workspaceUrl=$3
-notebookPath=$4
+workspaceUrl=$2
+notebookPath=$3
 
-token=""
-path=""
-workspaceUrl="adb-5980398570403553.13.azuredatabricks.net"
-notebookPath="/MyProjects-MyNotebooks"
+replaceSource="./"
+replaceDest=""
 
-for f in $path
-do
+find . -type f -name "*" -print0 | while IFS= read -r -d '' file; do
 
-curl -n \
-  -F path=$notebookPath \
-  -F content=@$f \
-  https://$workspace/api/2.0/workspace/import
+    echo "Processing file: $file"
+
+    filename=${file//$replaceSource/$replaceDest}
+
+    echo "New filename: $filename"
+
+    language=""
+    if [[ "$filename" == *sql ]]
+    then
+        language="SQL"
+    fi
+
+    if [[ "$filename" == *scala ]]
+    then
+        language="SCALA"
+    fi
+
+    if [[ "$filename" == *py ]]
+    then
+        language="PYTHON"
+    fi
+
+    if [[ "$filename" == *r ]]
+    then
+        language="R"
+    fi
+
+    echo "curl -F language=$language -F path=$notebookPath/$filename -F content=@$filename https://$workspaceUrl/api/2.0/workspace/import"
+
+    curl -n \
+      -H "Authorization: Bearer $token" \
+      -F language="$language" \
+      -F path="$notebookPath/$filename" \
+      -F content=@"$filename" \
+      https://$workspaceUrl/api/2.0/workspace/import  
+
+    echo ""  
 
 done
+

@@ -1,12 +1,12 @@
 {
-    "num_workers": 20,
+    "num_workers": 6,
     "cluster_name": "Large",
     "spark_version": "6.4.x-scala2.11",
     "spark_conf": {
         "spark.databricks.delta.preview.enabled": "true"
     },
-    "node_type_id": "Standard_DS14_v2",
-    "driver_node_type_id": "Standard_DS14_v2s",
+    "node_type_id": "Standard_DS5_v2",
+    "driver_node_type_id": "Standard_DS5_v2",
     "ssh_public_keys": [],
     "custom_tags": {},
     "spark_env_vars": {
