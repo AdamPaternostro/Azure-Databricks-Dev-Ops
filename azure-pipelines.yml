@@ -95,6 +95,12 @@ stages:
           ArtifactName: 'notebooks'
 
       - task: PublishBuildArtifacts@1
+        displayName: 'Publish Artifact: Databricks-Init-Scripts'
+        inputs:
+          PathtoPublish: '$(Build.Repository.LocalPath)/init-scripts'
+          ArtifactName: 'init-scripts'
+
+      - task: PublishBuildArtifacts@1
         displayName: 'Publish Artifact: Databricks-Deployment-Scripts'
         inputs:
           PathtoPublish: '$(Build.Repository.LocalPath)/deployment-scripts'
