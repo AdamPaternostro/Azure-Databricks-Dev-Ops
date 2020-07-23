@@ -5,7 +5,8 @@ Complete end to end sample of doing DevOps with Azure Databricks.  This is based
 ## Steps
 - Create a resource group in Azure named "Databricks-MyProject-WorkArea"
 - Create a Databricks workspace in Azure named "Databricks-MyProject-WorkArea" in the above resource group
-
+- Link your Databricks to source control: https://docs.databricks.com/notebooks/github-version-control.html
+- Create or import some notebooks (NOTE: This repo has some from Databricks imported for demo purposes)
 
 ## What Happens
 - Clusters are deployed
@@ -16,10 +17,6 @@ Complete end to end sample of doing DevOps with Azure Databricks.  This is based
     - The are deployed to the /Users folder?
 
 
-## Setting up source control with your Databricks workspace to GitHub
-- The Databricks-MyProject-WorkArea workspace needs to be connnected to source control.
-- You can connect it by following the below instructions.
-- https://docs.databricks.com/notebooks/github-version-control.html
 
 ## Why aren't we using the Azure AD token to login to Databricks API?
 - If you are familiar with this (https://docs.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/aad/app-aad-token) you can login to Databricks with an AD token.

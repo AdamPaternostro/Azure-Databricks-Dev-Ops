@@ -21,7 +21,7 @@ curl -X POST https://$workspaceUrl/api/2.0/workspace/mkdirs \
 
 
 ######################################################################################
-# Deploy notebooks (remove first then deploy)
+# Deploy notebooks
 ######################################################################################
 replaceSource="./"
 replaceDest=""

@@ -3,7 +3,7 @@
 # TO DO
 # You might want to Pin your clusters
 
-# Must be run in the directory with the notebooks (spaces in names in Bash can cause issues)
+# Must be run in the directory with the clusters (spaces in names in Bash can cause issues)
 token=$1
 workspaceUrl=$2
 
