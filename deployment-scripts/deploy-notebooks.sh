@@ -5,20 +5,6 @@ token=$1
 workspaceUrl=$2
 notebookPath=$3
 
-######################################################################################
-# Remove existing notebooks 
-######################################################################################
-JSON="{ \"path\" : \"$notebookPath/$filename\", \"recursive\": true }"
-echo "Delete Notebooks: $JSON"
-   
-echo "curl https://$workspaceUrl/api/2.0/workspace/delete -d $clusterId"
-
-curl -X POST https://$workspaceUrl/api/2.0/workspace/delete \
-    -H "Authorization: Bearer $token" \
-    -H "Content-Type: application/json" \
-    --data "$JSON"
-
-
 
 ######################################################################################
 # Create path
@@ -35,7 +21,7 @@ curl -X POST https://$workspaceUrl/api/2.0/workspace/mkdirs \
 
 
 ######################################################################################
-# Deploy notebooks
+# Deploy notebooks (remove first then deploy)
 ######################################################################################
 replaceSource="./"
 replaceDest=""
@@ -68,12 +54,13 @@ find . -type f -name "*" -print0 | while IFS= read -r -d '' file; do
 
     echo "curl -F language=$language -F path=$notebookPath/$filename -F content=@$filename https://$workspaceUrl/api/2.0/workspace/import"
 
-    curl -n https://$workspaceUrl/api/2.0/workspace/import  
+    curl -n https://$workspaceUrl/api/2.0/workspace/import \
       -H "Authorization: Bearer $token" \
       -F language="$language" \
+      -F overwrite=true \
       -F path="$notebookPath/$filename" \
       -F content=@"$filename"       
 
-    echo ""  
+    echo ""
 
 done
