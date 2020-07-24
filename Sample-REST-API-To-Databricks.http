@@ -1,0 +1,32 @@
+# https://docs.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/aad/service-prin-aad-token
+# Create a service principal and a secret
+# Make the service principal a contributor of the resource group or databricks workspace 
+# Note: This uses "jq" for JSON parsing
+
+tenant_id="<<REPLACE-ME>>"
+client_id="<<REPLACE-ME>>"
+client_secret="<<REPLACE-ME>>"
+subscription_id="<<REPLACE-ME>>"
+azure_databricks_resource_id="2ff814a6-3304-4ab8-85cb-cd0e6f879c1d"
+databricksInstance="<<REPLACE-ME (e.g. adb-5946405904802522.10)>>.azuredatabricks.net"
+resourceGroup="<<REPLACE-ME>>"
+workspaceName="<<REPLACE-ME>>"
+resourceId="/subscriptions/$subscription_id/resourceGroups/$resourceGroup/providers/Microsoft.Databricks/workspaces/$workspaceName"
+
+accessToken=$(curl -X POST https://login.microsoftonline.com/$tenant_id/oauth2/token \
+  -F resource=$azure_databricks_resource_id \
+  -F client_id=$client_id \
+  -F grant_type=client_credentials \
+  -F client_secret=$client_secret | jq .access_token --raw-output) 
+
+managementToken=$(curl -X POST https://login.microsoftonline.com/$tenant_id/oauth2/token \
+  -F resource=https://management.core.windows.net/ \
+  -F client_id=$client_id \
+  -F grant_type=client_credentials \
+  -F client_secret=$client_secret | jq .access_token --raw-output) 
+
+curl -X GET \
+-H "Authorization:Bearer $accessToken" \
+-H "X-Databricks-Azure-SP-Management-Token: $managementToken" \
+-H "X-Databricks-Azure-Workspace-Resource-Id: $resourceId" \
+https://$databricksInstance/api/2.0/clusters/list
