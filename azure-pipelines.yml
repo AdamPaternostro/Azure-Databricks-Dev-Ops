@@ -24,7 +24,7 @@ parameters:
 - name: NOTEBOOK_DEPLOYMENT_PATH
   displayName: Notebooks Deployment Path
   type: string
-  default: '/Users/user@domain.com'
+  default: '/MyProject'
 
 - name: RESOURCE_GROUP
   displayName: Resource Group Name
@@ -147,11 +147,11 @@ stages:
                 deploymentMode: 'Incremental'
 
             - task: Bash@3
-              displayName: "Deploy Databricks Notebooks"
+              displayName: "Deploy Databricks Init Scripts"
               inputs:
-                filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-notebooks.sh'
-                arguments: '${{ parameters.DATABRICKS_TOKEN }} ${{ parameters.DATABRICKS_URL }} ${{ parameters.NOTEBOOK_DEPLOYMENT_PATH }}'
-                workingDirectory: '$(Pipeline.Workspace)/${{ parameters.NOTEBOOK_PATH }}'
+                filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-init-scripts.sh'
+                arguments: '${{ parameters.DATABRICKS_TOKEN }} ${{ parameters.DATABRICKS_URL }}'
+                workingDirectory: '$(Pipeline.Workspace)/init-scripts'
 
             - task: Bash@3
               displayName: "Deploy Databricks Clusters"
@@ -161,8 +161,10 @@ stages:
                 workingDirectory: '$(Pipeline.Workspace)/clusters'
 
             - task: Bash@3
-              displayName: "Deploy Databricks Init Scripts"
+              displayName: "Deploy Databricks Notebooks"
               inputs:
-                filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-init-scripts.sh'
-                arguments: '${{ parameters.DATABRICKS_TOKEN }} ${{ parameters.DATABRICKS_URL }}'
-                workingDirectory: '$(Pipeline.Workspace)/init-scripts'
+                filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-notebooks.sh'
+                arguments: '${{ parameters.DATABRICKS_TOKEN }} ${{ parameters.DATABRICKS_URL }} ${{ parameters.NOTEBOOK_DEPLOYMENT_PATH }}'
+                workingDirectory: '$(Pipeline.Workspace)/${{ parameters.NOTEBOOK_PATH }}'
+
+                

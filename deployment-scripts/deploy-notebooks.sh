@@ -44,6 +44,8 @@ echo "Databricks workspaceUrl: $workspaceUrl"
 ######################################################################################
 # Create path
 ######################################################################################
+
+# This is only creating one path (not a nested set of paths)
 JSON="{ \"path\" : \"$notebookPathUnderWorkspace\" }"
 echo "Creating Path: $JSON"
    
