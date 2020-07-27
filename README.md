@@ -1,6 +1,5 @@
 # Azure-Databricks-Dev-Ops
-Complete end to end sample of doing DevOps with Azure Databricks.  This is based on working with lots of customers who have requested that they can reference a documented apporach.
-
+Complete end to end sample of doing DevOps with Azure Databricks.  This is based on working with lots of customers who have requested that they can reference a documented apporach. This also securely uses KeyVault for each environement as well as uses Azure AD authorization tokens to call the Databricks REST API.
 
 ## Steps
 - Create a resource group in Azure named "Databricks-MyProject-WorkArea"
@@ -22,7 +21,7 @@ Complete end to end sample of doing DevOps with Azure Databricks.  This is based
 - Run the pipeline
   - The first time the pipeline will create your Databricks workspace and KeyVault.  It will then fail!
      - Go to the KeyVault created in Azure
-     - Grant the service principal access to read the secrets: databricks_dev_ops_subscription_id,databricks_dev_ops_tenant_id,databricks_dev_ops_client_id,databricks_dev_ops_client_secret
+     - Grant the service principal access to read the secrets: databricks-dev-ops-subscription-id,databricks-dev-ops-tenant-id,databricks-dev-ops-client-id,databricks-dev-ops-client-secret
      - Set the values for the secrets.  Use the same service principal as above.  You will need to generate a secret.
 - Re-run the pipeline
   - The pipeline should now deploy your Databricks artifacts     
