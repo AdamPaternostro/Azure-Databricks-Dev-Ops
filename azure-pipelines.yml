@@ -6,23 +6,13 @@
 trigger: none
 
 parameters:
-- name: DATABRICKS_TOKEN
-  displayName: DATABRICKS_TOKEN
-  type: string
-  default: '000000'
-
-- name: DATABRICKS_URL
-  displayName: Databricks URL
-  type: string
-  default: 'adb-5946405904802522.2.azuredatabricks.net'
-
-- name: NOTEBOOK_PATH
-  displayName: Notebooks Relative Path
+- name: GIT_NOTEBOOK_PATH
+  displayName: Notebooks Relative Path in Git
   type: string
   default: 'notebooks/MyProject'
 
 - name: NOTEBOOK_DEPLOYMENT_PATH
-  displayName: Notebooks Deployment Path
+  displayName: Notebooks Deployment Path to Databricks
   type: string
   default: '/MyProject'
 
@@ -44,11 +34,6 @@ parameters:
   displayName: Databricks workspace name
   type: string
   default: 'Databricks-MyProject'
-
-- name: SUBSCRIPTION_ID
-  displayName: Azure Subscription Id
-  type: string
-  default: '00000000-0000-0000-0000-000000000000'
 
   # NOTE: You could make this a variable and then change the name to append the environment parameter above.  You would need to create a corrisponding service connection
   # e.g. If you connection is named "MyConnection", you would have MyConnection-Dev (for dev subscription), MyConnection-QA (etc...)
@@ -146,6 +131,21 @@ stages:
                 overrideParameters: '-workspaceName ${{ parameters.WORKSPACE_NAME }}-Dev'
                 deploymentMode: 'Incremental'
 
+            - task: AzureResourceManagerTemplateDeployment@3
+              displayName: "Deploy KeyVault ARM Template"
+              inputs:
+                deploymentScope: 'Resource Group'
+                azureResourceManagerConnection: ${{ parameters.RESOURCE_MANAGER_CONNECTION}}
+                subscriptionId: ${{ parameters.SUBSCRIPTION_ID }}
+                action: 'Create Or Update Resource Group'
+                resourceGroupName: ${{ parameters.RESOURCE_GROUP }}-Dev
+                location: ${{ parameters.LOCATION }}
+                templateLocation: 'Linked artifact'
+                csmFile: '$(Pipeline.Workspace)/ARM-Templates/azuredeploy.keyvault.json'
+                csmParametersFile: '$(Pipeline.Workspace)/ARM-Templates/parameters.keyvault.json'
+                overrideParameters: '-workspaceName ${{ parameters.WORKSPACE_NAME }}-Dev'
+                deploymentMode: 'Incremental'
+
             - task: Bash@3
               displayName: "Deploy Databricks Init Scripts"
               inputs:
@@ -165,6 +165,6 @@ stages:
               inputs:
                 filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-notebooks.sh'
                 arguments: '${{ parameters.DATABRICKS_TOKEN }} ${{ parameters.DATABRICKS_URL }} ${{ parameters.NOTEBOOK_DEPLOYMENT_PATH }}'
-                workingDirectory: '$(Pipeline.Workspace)/${{ parameters.NOTEBOOK_PATH }}'
+                workingDirectory: '$(Pipeline.Workspace)/${{ parameters.GIT_NOTEBOOK_PATH }}'
 
                 

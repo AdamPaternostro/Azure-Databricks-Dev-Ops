@@ -1,0 +1,77 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "keyVaultName": {
+            "type": "string"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.KeyVault/vaults",
+            "apiVersion": "2018-02-14",
+            "name": "[parameters('keyVaultName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "tenantId": "[subscription().tenantId]",
+                "sku": {
+                    "name": "standard",
+                    "family": "A"
+                },
+                "accessPolicies": [],
+                "networkAcls": {
+                    "defaultAction": "Allow",
+                    "bypass": "AzureServices"
+                }
+            }
+        },
+        {
+          "type": "Microsoft.KeyVault/vaults/secrets",
+          "name": "[concat(parameters('keyVaultName'), '/databricks_dev_ops_subscription_id",
+          "apiVersion": "2018-02-14",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+          ],
+          "properties": {
+            "value": "PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)"
+          }
+        },
+        {
+          "type": "Microsoft.KeyVault/vaults/secrets",
+          "name": "[concat(parameters('keyVaultName'), '/databricks_dev_ops_tenant_id",
+          "apiVersion": "2018-02-14",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+          ],
+          "properties": {
+            "value": "PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)"
+          }
+        },
+        {
+          "type": "Microsoft.KeyVault/vaults/secrets",
+          "name": "[concat(parameters('keyVaultName'), '/databricks_dev_ops_client_id",
+          "apiVersion": "2018-02-14",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+          ],
+          "properties": {
+            "value": "PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)"
+          }
+        },
+        {
+          "type": "Microsoft.KeyVault/vaults/secrets",
+          "name": "[concat(parameters('keyVaultName'), '/databricks_dev_ops_client_secret",
+          "apiVersion": "2018-02-14",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+          ],
+          "properties": {
+            "value": "PLEASE_SET_ME"
+          }
+        }
+    ]
+}
