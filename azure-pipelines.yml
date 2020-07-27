@@ -158,7 +158,7 @@ stages:
             - task: Bash@3
               displayName: "Deploy Databricks Init Scripts"
               # Only run if KeyVault has values set
-              condition: ne($(databricks_dev_ops_tenant_id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
+              # condition: ne($(databricks_dev_ops_tenant_id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
               inputs:
                 filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-init-scripts.sh'
                 arguments: '$(databricks_dev_ops_tenant_id) $(databricks_dev_ops_client_id) $(databricks_dev_ops_client_secret) $(databricks_dev_ops_subscription_id) ${{ parameters.RESOURCE_GROUP }}-Dev ${{ parameters.WORKSPACE_NAME }}-Dev'
@@ -167,7 +167,7 @@ stages:
             - task: Bash@3
               displayName: "Deploy Databricks Clusters"
               # Only run if KeyVault has values set
-              condition: ne($(databricks_dev_ops_tenant_id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
+              # condition: ne($(databricks_dev_ops_tenant_id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
               inputs:
                 filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-clusters.sh'
                 arguments: '$(databricks_dev_ops_tenant_id) $(databricks_dev_ops_client_id) $(databricks_dev_ops_client_secret) $(databricks_dev_ops_subscription_id) ${{ parameters.RESOURCE_GROUP }}-Dev ${{ parameters.WORKSPACE_NAME }}-Dev'
@@ -176,7 +176,7 @@ stages:
             - task: Bash@3
               displayName: "Deploy Databricks Notebooks"
               # Only run if KeyVault has values set
-              condition: ne($(databricks_dev_ops_tenant_id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
+              # condition: ne($(databricks_dev_ops_tenant_id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
               inputs:
                 filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-notebooks.sh'
                 arguments: '$(databricks_dev_ops_tenant_id) $(databricks_dev_ops_client_id) $(databricks_dev_ops_client_secret) $(databricks_dev_ops_subscription_id) ${{ parameters.RESOURCE_GROUP }}-Dev ${{ parameters.WORKSPACE_NAME }}-Dev ${{ parameters.NOTEBOOK_DEPLOYMENT_PATH }}'
