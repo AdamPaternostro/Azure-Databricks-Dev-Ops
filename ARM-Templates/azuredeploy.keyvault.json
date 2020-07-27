@@ -27,7 +27,7 @@
         },
         {
           "type": "Microsoft.KeyVault/vaults/secrets",
-          "name": "[concat(parameters('keyVaultName'), '/databricks_dev_ops_subscription_id']",
+          "name": "[concat(parameters('keyVaultName'), '/databricks_dev_ops_subscription_id)']",
           "apiVersion": "2018-02-14",
           "location": "[resourceGroup().location]",
           "dependsOn": [
@@ -39,7 +39,7 @@
         },
         {
           "type": "Microsoft.KeyVault/vaults/secrets",
-          "name": "[concat(parameters('keyVaultName'), '/databricks_dev_ops_tenant_id']",
+          "name": "[concat(parameters('keyVaultName'), '/databricks_dev_ops_tenant_id)']",
           "apiVersion": "2018-02-14",
           "location": "[resourceGroup().location]",
           "dependsOn": [
@@ -51,7 +51,7 @@
         },
         {
           "type": "Microsoft.KeyVault/vaults/secrets",
-          "name": "[concat(parameters('keyVaultName'), '/databricks_dev_ops_client_id']",
+          "name": "[concat(parameters('keyVaultName'), '/databricks_dev_ops_client_id)']",
           "apiVersion": "2018-02-14",
           "location": "[resourceGroup().location]",
           "dependsOn": [
@@ -63,7 +63,7 @@
         },
         {
           "type": "Microsoft.KeyVault/vaults/secrets",
-          "name": "[concat(parameters('keyVaultName'), '/databricks_dev_ops_client_secret']",
+          "name": "[concat(parameters('keyVaultName'), '/databricks_dev_ops_client_secret)']",
           "apiVersion": "2018-02-14",
           "location": "[resourceGroup().location]",
           "dependsOn": [
