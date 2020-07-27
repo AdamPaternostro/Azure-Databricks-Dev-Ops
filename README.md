@@ -27,7 +27,7 @@ Complete end to end sample of doing DevOps with Azure Databricks.  This is based
 - Create a new Pipeline in Azure and select the existing pipeline (azure-pipelines.yml)
 - Run the pipeline
   - Select the Mode: "Initialize-KeyVault"
-  ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/Deployment-Mode.png)
+  - ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/Deployment-Mode.png)
   - The first time the pipeline will create your Databricks workspace and KeyVault.  It will skip all the other steps!
   - The pipeline will create 3 environment Dev, QA, Prod.
   - Click on QA and Prod in Azure DevOps and set an Approver required
