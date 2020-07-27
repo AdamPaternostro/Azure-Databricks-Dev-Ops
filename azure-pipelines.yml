@@ -116,12 +116,21 @@ stages:
                 targetType: 'inline'
                 script: 'dir env:'
 
+
+            - task: AzureKeyVault@1
+              displayName: "Download KeyVault Secrets"
+              inputs:
+                azureSubscription: 'Microsoft Azure Adam Paternostro(64a14e46-6c7d-4063-9665-c295287ab709)'
+                KeyVaultName: 'AdamKeyVault'
+                SecretsFilter: 'databricks_dev_ops_subscription_id,databricks_dev_ops_tenant_id,databricks_dev_ops_client_id,databricks_dev_ops_client_secret'
+                RunAsPreJob: false
+
             - task: AzureResourceManagerTemplateDeployment@3
               displayName: "Deploy Databricks ARM Template"
               inputs:
                 deploymentScope: 'Resource Group'
                 azureResourceManagerConnection: ${{ parameters.RESOURCE_MANAGER_CONNECTION}}
-                subscriptionId: ${{ parameters.SUBSCRIPTION_ID }}
+                subscriptionId: $(databricks_dev_ops_subscription_id)
                 action: 'Create Or Update Resource Group'
                 resourceGroupName: ${{ parameters.RESOURCE_GROUP }}-Dev
                 location: ${{ parameters.LOCATION }}
@@ -136,7 +145,7 @@ stages:
               inputs:
                 deploymentScope: 'Resource Group'
                 azureResourceManagerConnection: ${{ parameters.RESOURCE_MANAGER_CONNECTION}}
-                subscriptionId: ${{ parameters.SUBSCRIPTION_ID }}
+                subscriptionId: $(databricks_dev_ops_subscription_id)
                 action: 'Create Or Update Resource Group'
                 resourceGroupName: ${{ parameters.RESOURCE_GROUP }}-Dev
                 location: ${{ parameters.LOCATION }}
@@ -145,14 +154,6 @@ stages:
                 csmParametersFile: '$(Pipeline.Workspace)/ARM-Templates/parameters.keyvault.json'
                 overrideParameters: '-workspaceName ${{ parameters.WORKSPACE_NAME }}-Dev'
                 deploymentMode: 'Incremental'
-
-            - task: AzureKeyVault@1
-              displayName: "Download KeyVault Secrets"
-              inputs:
-                azureSubscription: 'Microsoft Azure Adam Paternostro(64a14e46-6c7d-4063-9665-c295287ab709)'
-                KeyVaultName: 'AdamKeyVault'
-                SecretsFilter: 'databricks_dev_ops_subscription_id,databricks_dev_ops_tenant_id,databricks_dev_ops_client_id,databricks_dev_ops_client_secret'
-                RunAsPreJob: false
 
             - task: Bash@3
               displayName: "Deploy Databricks Init Scripts"
