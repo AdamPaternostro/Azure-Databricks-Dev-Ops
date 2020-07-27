@@ -6,21 +6,26 @@
 trigger: none
 
 parameters:
+# This is the path of your notebooks in Git.  Currently, this is not recursively deploying notebooks
 - name: GIT_NOTEBOOK_PATH
   displayName: Notebooks Relative Path in Git
   type: string
   default: 'notebooks/MyProject'
 
+# This is where in your Databricks workspace your notebooks will be deployed
+# Typically this is under a Folder under the Workspace and not under a specific user's folder
 - name: NOTEBOOK_DEPLOYMENT_PATH
   displayName: Notebooks Deployment Path to Databricks
   type: string
   default: '/MyProject'
 
+# This resource group for the Databricks workspace and KeyVault
 - name: RESOURCE_GROUP
   displayName: Resource Group Name
   type: string
   default: 'Databricks-MyProject'
-  
+
+# The Azure region to which to deploy your resources
 - name: LOCATION
   displayName: Azure Region
   type: string
@@ -30,10 +35,23 @@ parameters:
   - EastUS2
   - Add-others-here
 
+# This is the name of your Azure Databricks resrouce
 - name: WORKSPACE_NAME
   displayName: Databricks workspace name
   type: string
   default: 'Databricks-MyProject'
+
+# This is a KeyVault for holding the Service Principal to make Databricks API calls and to hold Databricks KeyVault backed Secrets
+- name: KEY_VAULT_NAME
+  displayName: KeyVault name
+  type: string
+  default: 'KeyVault-MyProject'
+
+# This is the subscription the Databricks workspace and KeyVault will be created in
+- name: SUBSCRIPTION_ID
+  displayName: Azure Subscription Id
+  type: string
+  default: '00000000-0000-0000-0000-000000000000'
 
   # NOTE: You could make this a variable and then change the name to append the environment parameter above.  You would need to create a corrisponding service connection
   # e.g. If you connection is named "MyConnection", you would have MyConnection-Dev (for dev subscription), MyConnection-QA (etc...)
@@ -116,21 +134,13 @@ stages:
                 targetType: 'inline'
                 script: 'dir env:'
 
-
-            - task: AzureKeyVault@1
-              displayName: "Download KeyVault Secrets"
-              inputs:
-                azureSubscription: 'Microsoft Azure Adam Paternostro(64a14e46-6c7d-4063-9665-c295287ab709)'
-                KeyVaultName: 'AdamKeyVault'
-                SecretsFilter: 'databricks_dev_ops_subscription_id,databricks_dev_ops_tenant_id,databricks_dev_ops_client_id,databricks_dev_ops_client_secret'
-                RunAsPreJob: false
-
+            ### Deploy Databricks Workspace ###
             - task: AzureResourceManagerTemplateDeployment@3
               displayName: "Deploy Databricks ARM Template"
               inputs:
                 deploymentScope: 'Resource Group'
                 azureResourceManagerConnection: ${{ parameters.RESOURCE_MANAGER_CONNECTION}}
-                subscriptionId: $(databricks_dev_ops_subscription_id)
+                subscriptionId: ${{ parameters.SUBSCRIPTION_ID }}
                 action: 'Create Or Update Resource Group'
                 resourceGroupName: ${{ parameters.RESOURCE_GROUP }}-Dev
                 location: ${{ parameters.LOCATION }}
@@ -140,21 +150,32 @@ stages:
                 overrideParameters: '-workspaceName ${{ parameters.WORKSPACE_NAME }}-Dev'
                 deploymentMode: 'Incremental'
 
+            ### Show Azure KeyVault ###
             - task: AzureResourceManagerTemplateDeployment@3
               displayName: "Deploy KeyVault ARM Template"
               inputs:
                 deploymentScope: 'Resource Group'
                 azureResourceManagerConnection: ${{ parameters.RESOURCE_MANAGER_CONNECTION}}
-                subscriptionId: $(databricks_dev_ops_subscription_id)
+                subscriptionId: ${{ parameters.SUBSCRIPTION_ID }}
                 action: 'Create Or Update Resource Group'
                 resourceGroupName: ${{ parameters.RESOURCE_GROUP }}-Dev
                 location: ${{ parameters.LOCATION }}
                 templateLocation: 'Linked artifact'
                 csmFile: '$(Pipeline.Workspace)/ARM-Templates/azuredeploy.keyvault.json'
                 csmParametersFile: '$(Pipeline.Workspace)/ARM-Templates/parameters.keyvault.json'
-                overrideParameters: '-workspaceName ${{ parameters.WORKSPACE_NAME }}-Dev'
+                overrideParameters: '-keyVaultName ${{ parameters.KEY_VAULT_NAME }}-Dev'
                 deploymentMode: 'Incremental'
 
+            ### Download KeyVault Secrests ###
+            - task: AzureKeyVault@1
+              displayName: "Download KeyVault Secrets"
+              inputs:
+                azureSubscription: ${{ parameters.RESOURCE_MANAGER_CONNECTION}}
+                KeyVaultName:  '${{ parameters.KEY_VAULT_NAME }}-Dev'
+                SecretsFilter: 'databricks_dev_ops_subscription_id,databricks_dev_ops_tenant_id,databricks_dev_ops_client_id,databricks_dev_ops_client_secret'
+                RunAsPreJob: false
+
+            ### Deploy your Databricks Init Scripts to dbfa:/init-scripts folder on DBFS ###
             - task: Bash@3
               displayName: "Deploy Databricks Init Scripts"
               # Only run if KeyVault has values set
@@ -164,6 +185,7 @@ stages:
                 arguments: '$(databricks_dev_ops_tenant_id) $(databricks_dev_ops_client_id) $(databricks_dev_ops_client_secret) $(databricks_dev_ops_subscription_id) ${{ parameters.RESOURCE_GROUP }}-Dev ${{ parameters.WORKSPACE_NAME }}-Dev'
                 workingDirectory: '$(Pipeline.Workspace)/init-scripts'
 
+            ### Deploy your Databricks Clusters (and then Stop them since a deployment starts them) ###
             - task: Bash@3
               displayName: "Deploy Databricks Clusters"
               # Only run if KeyVault has values set
@@ -173,6 +195,7 @@ stages:
                 arguments: '$(databricks_dev_ops_tenant_id) $(databricks_dev_ops_client_id) $(databricks_dev_ops_client_secret) $(databricks_dev_ops_subscription_id) ${{ parameters.RESOURCE_GROUP }}-Dev ${{ parameters.WORKSPACE_NAME }}-Dev'
                 workingDirectory: '$(Pipeline.Workspace)/clusters'
 
+            ### Deploy your Databricks Notebooks ###
             - task: Bash@3
               displayName: "Deploy Databricks Notebooks"
               # Only run if KeyVault has values set
