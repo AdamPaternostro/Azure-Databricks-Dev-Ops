@@ -1,6 +1,10 @@
 # Azure-Databricks-Dev-Ops
 Complete end to end sample of doing DevOps with Azure Databricks.  This is based on working with lots of customers who have requested that they can reference a documented apporach. This also securely uses KeyVault for each environement as well as uses Azure AD authorization tokens to call the Databricks REST API.
 
+
+![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/Databricks-Dev-Ops.gif)
+
+
 ## Steps
 - Create a resource group in Azure named "Databricks-MyProject-WorkArea"
 - Create a Databricks workspace in Azure named "Databricks-MyProject-WorkArea" in the above resource group
@@ -19,12 +23,40 @@ Complete end to end sample of doing DevOps with Azure Databricks.  This is based
 - Create a new service connection in Azure DevOps
 - Create a new Pipeline in Azure and select the existing pipeline (azure-pipelines.yml)
 - Run the pipeline
-  - The first time the pipeline will create your Databricks workspace and KeyVault.  It will then fail!
+  - Select the Mode: "Initialize-KeyVault"
+  - The first time the pipeline will create your Databricks workspace and KeyVault.  It will skip all the other steps!
      - Go to the KeyVault created in Azure
-     - Grant the service principal access to read the secrets: databricks-dev-ops-subscription-id,databricks-dev-ops-tenant-id,databricks-dev-ops-client-id,databricks-dev-ops-client-secret
-     - Set the values for the secrets.  Use the same service principal as above.  You will need to generate a secret.
-- Re-run the pipeline
-  - The pipeline should now deploy your Databricks artifacts     
+     - Click on Access Policies
+     - Click Add Access Policy
+        - Configure from template: "Secret Management"
+        - Key Permissions "0 Selected" (clear values if selected)
+        - Secret Permissions "2 Selected" (select Get and List)
+        - Certificate Permissins "0 Selected" (clear values if selected)
+        - Select your Azure Pipeline Service Principal
+        - Click Add
+        - Click Save
+     - Repeat the above steps and add yourself as a Full Secret management 
+        - Select the template "Secret Management"
+        - Select yourself as the Princpal
+        - Click Add
+        - Click Save
+     - Click on Secrets
+       - Click Generate / Import
+       - You should see 4 secrets: databricks-dev-ops-subscription-id,databricks-dev-ops-tenant-id,databricks-dev-ops-client-id,databricks-dev-ops-client-secret
+       - You need to set these values
+          - Option 1 (Create a new service principal)
+          - Option 2 (Use the same DevOps service principal)
+          - In either case you need to make the service principal a contributor of the Databricks workspace or the resource group in which the workspace resides.
+       - Click on each secret and click "New Version"
+          - databricks-dev-ops-subscription-id: 00000000-0000-0000-0000-000000000000
+          - databricks-dev-ops-tenant-id: 00000000-0000-0000-0000-000000000000
+          - databricks-dev-ops-client-id: 00000000-0000-0000-0000-000000000000
+          - databricks-dev-ops-client-secret: "some crazy string"
+- Re-run the pipeline using Mode "Databricks"
+  - The pipeline should now deploy your Databricks artifacts  
+- NOTE: If you re-run the pipeline in Mode "Initialize-KeyVault", your KeyVault will be overwritten
+  - A better apporach is to test for the existance of the KeyVault during the Pipeline
+  - Most customers have IT create their KeyVault for them.  In this case, you just need to KeyVault name they created. 
 
 ## What Happens during the Pipeline
 - An Azure Resource Group is created (if it does not exist)

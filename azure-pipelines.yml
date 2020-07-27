@@ -53,13 +53,22 @@ parameters:
   type: string
   default: '00000000-0000-0000-0000-000000000000'
 
-  # NOTE: You could make this a variable and then change the name to append the environment parameter above.  You would need to create a corrisponding service connection
-  # e.g. If you connection is named "MyConnection", you would have MyConnection-Dev (for dev subscription), MyConnection-QA (etc...)
+# NOTE: You could make this a variable and then change the name to append the environment parameter above.  You would need to create a corrisponding service connection
+# e.g. If you connection is named "MyConnection", you would have MyConnection-Dev (for dev subscription), MyConnection-QA (etc...)
 - name: RESOURCE_MANAGER_CONNECTION
   displayName: Azure Resource Connection Name
   type: string
   default: 'Microsoft Azure Adam Paternostro(00000000-0000-0000-0000-000000000000)'
 
+# Inialize the system
+# Note: We only want to run the KeyVault ARM template once.  If you keep re-running, then you will OVERWRITE your values
+- name: MODE
+  displayName: Deployment Mode
+  type: string
+  default: 'Databricks'
+  values:
+  - Databricks
+  - Initialize-KeyVault
 
 stages:
 #############################################################
@@ -152,6 +161,7 @@ stages:
 
             ### Show Azure KeyVault ###
             - task: AzureResourceManagerTemplateDeployment@3
+              condition: ne(${{ parameters.MODE }}, 'Initialize-KeyVault')
               displayName: "Deploy KeyVault ARM Template"
               inputs:
                 deploymentScope: 'Resource Group'
@@ -168,6 +178,7 @@ stages:
 
             ### Download KeyVault Secrests ###
             - task: AzureKeyVault@1
+              condition: ne(${{ parameters.MODE }}, 'Databricks')
               displayName: "Download KeyVault Secrets"
               inputs:
                 azureSubscription: ${{ parameters.RESOURCE_MANAGER_CONNECTION}}
@@ -177,6 +188,7 @@ stages:
 
             ### Deploy your Databricks Init Scripts to dbfa:/init-scripts folder on DBFS ###
             - task: Bash@3
+              condition: ne(${{ parameters.MODE }}, 'Databricks')
               displayName: "Deploy Databricks Init Scripts"
               # Only run if KeyVault has values set
               # condition: ne($(databricks-dev-ops-tenant-id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
@@ -187,6 +199,7 @@ stages:
 
             ### Deploy your Databricks Clusters (and then Stop them since a deployment starts them) ###
             - task: Bash@3
+              condition: ne(${{ parameters.MODE }}, 'Databricks')
               displayName: "Deploy Databricks Clusters"
               # Only run if KeyVault has values set
               # condition: ne($(databricks-dev-ops-tenant-id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
@@ -197,6 +210,7 @@ stages:
 
             ### Deploy your Databricks Notebooks ###
             - task: Bash@3
+              condition: ne(${{ parameters.MODE }}, 'Databricks')
               displayName: "Deploy Databricks Notebooks"
               # Only run if KeyVault has values set
               # condition: ne($(databricks-dev-ops-tenant-id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
