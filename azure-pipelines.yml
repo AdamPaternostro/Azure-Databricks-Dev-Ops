@@ -122,7 +122,7 @@ stages:
 #############################################################
 # Deploy to Dev
 #############################################################
-- stage: Staging
+- stage: Dev
   jobs:
   - deployment: JobDev
     displayName: 'Job Dev'
@@ -231,7 +231,7 @@ stages:
 #############################################################
 # Deploy to QA
 #############################################################
-- stage: Staging
+- stage: QA
   jobs:
   - deployment: JobQA
     displayName: 'Job QA'
@@ -340,7 +340,7 @@ stages:
 #############################################################
 # Deploy to Prod
 #############################################################
-- stage: Staging
+- stage: Prod
   jobs:
   - deployment: JobProd
     displayName: 'Job Prod'
