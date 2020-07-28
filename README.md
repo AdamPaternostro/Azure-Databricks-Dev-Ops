@@ -111,7 +111,7 @@ Complete end to end sample of doing DevOps with Azure Databricks.  This is based
    ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/Databricks-Notebooks-Deployed.png)
 
 
-- Jobs are deploy
+- Jobs are deployed
    - The script obtains an Azure AD authorization token using the Service Principal in KeyVault.  This token is then used to call the Databricks REST API
    - Jobs are deployed as follows:
       - Get the list of Jobs and Clusters (we need this for cluster ids)
@@ -126,6 +126,7 @@ Complete end to end sample of doing DevOps with Azure Databricks.  This is based
          - Take the entire JSON (in the file) and place it under a new attribute named "new_settings"
          - Inject the attribute "job_id" and set the value
          - Call "Reset" which is "Update"
+   ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/Databricks-Jobs-Deployed.png)
 
 - Add you own items!
   - Cut and paste the code from one of the above tasks.
