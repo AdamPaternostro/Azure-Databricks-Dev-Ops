@@ -1,92 +1,131 @@
 # Azure-Databricks-Dev-Ops
-Complete end to end sample of doing DevOps with Azure Databricks.  This is based on working with lots of customers who have requested that they can reference a documented apporach. This also securely uses KeyVault for each environement as well as uses Azure AD authorization tokens to call the Databricks REST API.
+Complete end to end sample of doing DevOps with Azure Databricks.  This is based on working with lots of customers who have requested that they can reference a documented apporach. The included code utilizes KeyVault for each environement and uses Azure AD authorization tokens to call the Databricks REST API.
 
+This will show you how to deploy your Databricks assests via Azure Dev Ops Pipelines so that your Notebooks, Clusters, Jobs and Init Scipts are automatically deployed and configured per environment.
 
 ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/Databricks-Dev-Ops.gif)
 
+## How to deploy this in your subscription
+- Create a service principal that will be used for your DevOps pipeline.
+   - Option A (easy security)
+      - Add the service principal to the Contributor role to your Subscription.
+   - Option B (fine grain security)
+      - Create three resource groups
+         - Databricks-MyProject-Dev
+         - Databricks-MyProject-QA
+         - Databricks-MyProject-Prod
+      - Grant the service principal to the Contributor role to each Resource Group
 
-## Steps
-- Create a resource group in Azure named "Databricks-MyProject-WorkArea"
-- Create a Databricks workspace in Azure named "Databricks-MyProject-WorkArea" in the above resource group
-- Link your Databricks to source control: https://docs.databricks.com/notebooks/github-version-control.html
-- Create or import some notebooks (NOTE: This repo has some from Databricks imported for demo purposes)
+- Create an Azure Dev Ops project
+- Click on the Repo icon on the left menu 
+  - Select "Import" 
+  - Enter the URL: ```https://github.com/AdamPaternostro/Azure-Databricks-Dev-Ops```
 
-## DevOps Pipeline
+- Click on the Pipeline icon on the left menu 
+  - Click "Create Pipeline"
+  - Click "Azure Repos Git"
+  - Click on your Repo
+  - Click the arrow on the "Run" button and select Save (don't run it, just save it)
 
+- Click on the Gear icon (bottom left)
+  - Click Service Connections
+  - Click Create Service Connection
+  - Click Azure Resource Manager
+  - Click Service Principal (manual)
+  - Fill in the Fields
+    - You will need the values from when you created a service principal
+    - You can name your connection something like "DatabricksDevOpsConnection" 
+    - NOTE: You can also create a service connection per subscription if you would be deploying to different subscriptions.
+  - Click Verify and Save
+
+- Click on the Pipeline icon on the left menu
+  - Select your pipeline
+  - Click Run
+    - Fill in the fields (only **bold** are not the defaults)
+       - Notebooks Relative Path in Git: notebooks/MyProject
+       - Notebooks Deployment Path to Databricks: /MyProject
+       - Resource Group Name: Databricks-MyProject (NOTE: "-Dev" will be appended)
+       - Azure Region: EastUS2
+       - Databricks workspace name: Databricks-MyProject
+       - KeyVault name: KeyVault-MyProject
+       - Azure Subscription Id: **replace this 00000000-0000-0000-0000-000000000000**
+       - Azure Resource Connection Name: **DatabricksDevOpsConnection**
+       - Deployment Mode: **Initialize KeyVault**
+       - ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/Deployment-Mode.png)
+       - Click "Run"
+
+- You should see the following
 ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/DevOps-Stages-Environments.png)
 
-- Create a new Azure DevOps Project
-- Import the code (or link to GitHub) under the repository menu
-- Create a Service Principal in Azure
-   - If you can make the service principal a subscription contributor 
-   - If you cannot set permissions this high
-      - Create a resource group name "something-Dev"
-      - Grant the service principal contributor access to the resource group
-      - NOTE: For testing purposes create two more resource groups "something-QA" and "something-Prod".  Also grant the service principal access.
-- Create a new service connection in Azure DevOps
-- Create a new Pipeline in Azure and select the existing pipeline (azure-pipelines.yml)
-- Run the pipeline
-  - Select the Mode: "Initialize-KeyVault"
-  - ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/Deployment-Mode.png)
-  - The first time the pipeline will create your Databricks workspace and KeyVault.  It will skip all the other steps!
-  - The pipeline will create 3 environment Dev, QA, Prod.
-  - Click on QA and Prod in Azure DevOps and set an Approver required
+- The first time the pipeline will create your Databricks workspace and KeyVault.  **It will skip all the other steps!**
+
+  - The pipeline will create 3 environment Dev, QA, Prod in DevOps
+  - The pileline will create 3 Azure resource groups
+    ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/DeployedResourceGroups.png)
   - In the Azure Portal
-     - Go to the KeyVault created in Azure (repeat this for Dev, QA, Prod)
+     - Go to the KeyVault created in each Azure resource group (repeat this for Dev, QA, Prod)
      - Click on Access Policies
-         - NOTE: You might have to wait a few minutes (5+) to add the policies, mine gave a error at first and then was okay.
+         - NOTE: You might have to wait a few minutes to add the policies, mine gave a error at first and then was okay.
          - Click Add Access Policy
             - Configure from template: "Secret Management"
-            - Key Permissions "0 Selected" (clear values if selected)
+            - Key Permissions "0 Selected" 
             - Secret Permissions "2 Selected" (select Get and List)
-            - Certificate Permissins "0 Selected" (clear values if selected)
-            - Select your Azure Pipeline Service Principal
+            - Certificate Permissins "0 Selected" 
+            - Select your Azure Pipeline Service Principal (you can enter the Client ID (Guid) in the search box)
             - Click Add
             - Click Save
          - Repeat the above steps and add yourself as a Full Secret management 
             - Select the template "Secret Management"
-            - Select yourself as the Princpal
+            - **Leave** all the Secret Permissions selected
+            - Select yourself as the Principal
             - Click Add
             - Click Save
      - Click on Secrets
        - Click Generate / Import
        - You should see 4 secrets: databricks-dev-ops-subscription-id,databricks-dev-ops-tenant-id,databricks-dev-ops-client-id,databricks-dev-ops-client-secret
-       - You need to set these values
+       - You need to set these values.  These values are a Service Principal that will call over to the Databricks workspace using the Databricks REST API.
           - Option 1 (Create a new service principal)
           - Option 2 (Use the same DevOps service principal)
-          - In either case you need to make the service principal a contributor of the Databricks workspace or a contributor in the resource group in which the workspace resides.
+          - In either case you need to make the service principal a **contributor** of the Databricks workspace or a contributor in the resource group in which the workspace resides.  You need to set this in Azure.
        - Click on each secret and click "New Version" and set the secret value
           - databricks-dev-ops-subscription-id: 00000000-0000-0000-0000-000000000000
           - databricks-dev-ops-tenant-id: 00000000-0000-0000-0000-000000000000
           - databricks-dev-ops-client-id: 00000000-0000-0000-0000-000000000000
           - databricks-dev-ops-client-secret: "some crazy string"
 
-- Re-run the pipeline using Mode "Databricks"
-  - The pipeline should now deploy your Databricks artifacts  
+- Re-run the pipeline 
+   - Set the parameters
+       - Azure Subscription Id: **replace this 00000000-0000-0000-0000-000000000000**
+       - Azure Resource Connection Name: **DatabricksDevOpsConnection**
+       - Deployment Mode: **Databricks**  (this is the default, so you really do not need to select it)
+   - The pipeline should now deploy your Databricks artifacts  
 
-- NOTE: If you re-run the pipeline in Mode "Initialize-KeyVault", your KeyVault will be overwritten
-  - A better apporach is to test for the existance of the KeyVault during the Pipeline
-  - Most customers have IT create their KeyVault for them.  In this case, you just need to KeyVault name they created. 
+- Setting Approvals (so your pipeline does not deploy to QA or Prod without an Approval)
+  - In Azure DevOps click on the Environments menu on the left
+  - Click on an Environment
+  - Clickon the "..." in the top right
+  - Select on Approvals and checks
+  - Click on Approvals
+
 
 ## What Happens during the Pipeline
 - An Azure Resource Group is created (if it does not exist)
   - The Dev stage creates a resouce group named "Databricks-MyProject-Dev"
   - The QA stage creates a resouce group named "Databricks-MyProject-QA"
   - The QA stage creates a resouce group named "Databricks-MyProject-Prod"
-  - You can change these to your naming schema if you perfer
-  ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/DeployedResourceGroups.png)
+  - You can change these to your naming schema if you prefer
 
 - An Azure Databricks workspace is created
   - The Dev stage creates a resouce group named "Databricks-MyProject-Dev"
   - The QA stage creates a resouce group named "Databricks-MyProject-QA"
   - The QA stage creates a resouce group named "Databricks-MyProject-Prod"
-  - You can change these to your naming schema if you perfer
+  - You can change these to your naming schema if you prefer
 
 - An Azure KeyVault is created
   - The Dev stage creates a resouce group named "KeyVault-MyProject-Dev"
   - The QA stage creates a resouce group named "KeyVault-MyProject-QA"
   - The QA stage creates a resouce group named "KeyVault-MyProject-Prod"
-  - You can change these to your naming schema if you perfer
+  - You can change these to your naming schema if you prefer
 
 - KeyVault Secrets are downloaded
   - This allows you to have a KeyVault per Environemnt (Dev, QA, Prod)
@@ -110,7 +149,6 @@ Complete end to end sample of doing DevOps with Azure Databricks.  This is based
    - The are deployed to the /Users folder under a new folder that your specify.  The folder is not under any specific user, it will be at the root.
    ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/Databricks-Notebooks-Deployed.png)
 
-
 - Jobs are deployed
    - The script obtains an Azure AD authorization token using the Service Principal in KeyVault.  This token is then used to call the Databricks REST API
    - Jobs are deployed as follows:
@@ -131,17 +169,35 @@ Complete end to end sample of doing DevOps with Azure Databricks.  This is based
 - Add you own items!
   - Cut and paste the code from one of the above tasks.
   - Think about the order of operations.  If you are creating a Databricks Job and it references a cluster, then you should deploy the Job after the clusters.
-  - NOTE: If you need to inject a value (e.g. Databricks "cluster_id"), you can see the technique in the deploy-clusters.sh script.
+  - NOTE: If you need to inject a value (e.g. Databricks "cluster_id"), you can see the technique in the deploy-clusters.sh script.  Some items liek when you deploy a job might refer a cluster id that you must set during the deployment.
+
+
+
+## How to use with your own Databricks code
+- Create a resource group in Azure named "Databricks-MyProject-WorkArea"
+- Create a Databricks workspace in Azure named "Databricks-MyProject-WorkArea" in the above resource group
+- Link your Databricks to source control
+   - https://docs.databricks.com/notebooks/github-version-control.html
+- Create or import some notebooks (NOTE: This repo has some from Databricks imported for demo purposes)
+- Link the Notebook to the Azure DevOps repo 
+- Save your Notebook
+- Re-run the pipeline and the Notebook should be pushed to Dev, QA and Prod
+
 
 ## Notes
-- You do not need to have the pipeline create a KeyVault.  If you perfer you can just use one that exists in a central location. The DevOps service principal just needs access to read the keys.
-- I do not use the Databricks CLI.  I know there are some DevOps Marketplace items that will deploy Notebooks, etc.  The reason for this is that customers have had issues with the CLI installing on top of one another and their DevOps pipelines break.  The Databricks REST API calls are simple and installing the CLI adds a dependency which could break.
-- To deploy a cluster, Databricks shows you the JSON that is required.
+- You can used your own KeyVault
+  - The DevOps service principal just needs access to read the keys.
+  - Just add the secrets to your KeyVault and grant the service principal access via a policy.
+- I do not use the Databricks CLI.  
+  - I know there are some DevOps Marketplace items that will deploy Notebooks, etc.  The reason for this is that customers have had issues with the CLI installing on top of one another and their DevOps pipelines break.  The Databricks REST API calls are simple and installing the CLI adds a dependency which could break.
+
 
 ## Potential Improvements
 - Have the dev ops pipeline test for the existance of a KeyVault if you want to eliminate the Mode parameter (Intialize-KeyVault | Databricks)
-- Seperate the tasks into another repo and call then from this pipeline.  This would make it more manageable.  
+- Seperate the tasks into another repo and call then from this pipeline.  This would make the tasks more re-useable, especially accross many differnet Git repos.  
    - See https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#use-other-repositories
-- Need to update this based upon the new Data Science Git Projects instead of using the Notebook per Git integration
+- Need to update this based upon the new Data Science Git Projects instead of using the Notebook per Git integration.
+   - Databricks has a new feature where Notebooks do not need to be indiviually linked.  
 - Deal with deploying Hive/Metastore table changes/scripts
-- Deal with deploying Mount Points.  Most customers run a Notebook (one time) and then delete it.
+- Deal with deploying Mount Points.  
+   - Most customers run a Notebook (one time) and then delete it.
