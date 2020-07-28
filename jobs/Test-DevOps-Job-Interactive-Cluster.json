@@ -1,0 +1,11 @@
+{
+    "name": "Test-DevOps-Job-Interactive-Cluster",
+    "existing_cluster_id": "Small",
+    "email_notifications": {},
+    "timeout_seconds": 0,
+    "notebook_task": {
+        "notebook_path": "/MyProject/Pop vs. Price SQL.sql",
+        "revision_timestamp": 0
+    },
+    "max_concurrent_runs": 1
+}

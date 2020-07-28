@@ -110,6 +110,23 @@ Complete end to end sample of doing DevOps with Azure Databricks.  This is based
    - The are deployed to the /Users folder under a new folder that your specify.  The folder is not under any specific user, it will be at the root.
    ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/Databricks-Notebooks-Deployed.png)
 
+
+- Jobs are deploy
+   - The script obtains an Azure AD authorization token using the Service Principal in KeyVault.  This token is then used to call the Databricks REST API
+   - Jobs are deployed as follows:
+      - Get the list of Jobs and Clusters (we need this for cluster ids)
+      - Process the each jobs.json
+      - Search the list of jobs based upon the job name
+      - If the jobs does not exists
+         - If there the attribute "existing_cluster_id" exists in the JSON, replace the value by looking up the Cluster Id and call "Create"
+         - NOTE: YOU DO NOT PUT YOUR CLUSTER ID in the existing cluster id field.  You need to put the Cluster name and this script will swap it out for you.  Your cluster id will change per environment.
+         - If there is not attribute "existing_cluster_id" the just call "Create"
+      - If the job exists
+         - If there the attribute "existing_cluster_id" exists in the JSON, replace the value by looking up the Cluster Id
+         - Take the entire JSON (in the file) and place it under a new attribute named "new_settings"
+         - Inject the attribute "job_id" and set the value
+         - Call "Reset" which is "Update"
+
 - Add you own items!
   - Cut and paste the code from one of the above tasks.
   - Think about the order of operations.  If you are creating a Databricks Job and it references a cluster, then you should deploy the Job after the clusters.
@@ -122,7 +139,8 @@ Complete end to end sample of doing DevOps with Azure Databricks.  This is based
 
 ## Potential Improvements
 - Have the dev ops pipeline test for the existance of a KeyVault if you want to eliminate the Mode parameter (Intialize-KeyVault | Databricks)
-- Seperate the tasks into another repo and call then from this pipeline.  This would make it more manageable.  See https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#use-other-repositories
+- Seperate the tasks into another repo and call then from this pipeline.  This would make it more manageable.  
+   - See https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#use-other-repositories
 - Need to update this based upon the new Data Science Git Projects instead of using the Notebook per Git integration
 - Deal with deploying Hive/Metastore table changes/scripts
 - Deal with deploying Mount Points.  Most customers run a Notebook (one time) and then delete it.
