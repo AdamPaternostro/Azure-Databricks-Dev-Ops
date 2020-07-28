@@ -107,6 +107,12 @@ stages:
           ArtifactName: 'notebooks'
 
       - task: PublishBuildArtifacts@1
+        displayName: 'Publish Artifact: Databricks-Jobs'
+        inputs:
+          PathtoPublish: '$(Build.Repository.LocalPath)/jobs'
+          ArtifactName: 'jobs'
+
+      - task: PublishBuildArtifacts@1
         displayName: 'Publish Artifact: Databricks-Init-Scripts'
         inputs:
           PathtoPublish: '$(Build.Repository.LocalPath)/init-scripts'
@@ -226,6 +232,16 @@ stages:
                 arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resouceGroupName) $(databricksWorkspaceName) ${{ parameters.NOTEBOOK_DEPLOYMENT_PATH }}'
                 workingDirectory: '$(Pipeline.Workspace)/${{ parameters.GIT_NOTEBOOK_PATH }}'
 
+            ### Deploy your Databricks Jobs ###
+            - task: Bash@3
+              condition: eq('${{ parameters.MODE }}', 'Databricks')
+              displayName: "Deploy Databricks Jobs"
+              # Only run if KeyVault has values set
+              # condition: ne($(databricks-dev-ops-tenant-id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
+              inputs:
+                filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-jobs.sh'
+                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resouceGroupName) $(databricksWorkspaceName)'
+                workingDirectory: '$(Pipeline.Workspace)/jobs'
 
 
 #############################################################
@@ -335,6 +351,16 @@ stages:
                 arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resouceGroupName) $(databricksWorkspaceName) ${{ parameters.NOTEBOOK_DEPLOYMENT_PATH }}'
                 workingDirectory: '$(Pipeline.Workspace)/${{ parameters.GIT_NOTEBOOK_PATH }}'
 
+            ### Deploy your Databricks Jobs ###
+            - task: Bash@3
+              condition: eq('${{ parameters.MODE }}', 'Databricks')
+              displayName: "Deploy Databricks Jobs"
+              # Only run if KeyVault has values set
+              # condition: ne($(databricks-dev-ops-tenant-id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
+              inputs:
+                filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-jobs.sh'
+                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resouceGroupName) $(databricksWorkspaceName)'
+                workingDirectory: '$(Pipeline.Workspace)/jobs'
 
 
 #############################################################
@@ -444,3 +470,13 @@ stages:
                 arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resouceGroupName) $(databricksWorkspaceName) ${{ parameters.NOTEBOOK_DEPLOYMENT_PATH }}'
                 workingDirectory: '$(Pipeline.Workspace)/${{ parameters.GIT_NOTEBOOK_PATH }}'
 
+            ### Deploy your Databricks Jobs ###
+            - task: Bash@3
+              condition: eq('${{ parameters.MODE }}', 'Databricks')
+              displayName: "Deploy Databricks Jobs"
+              # Only run if KeyVault has values set
+              # condition: ne($(databricks-dev-ops-tenant-id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
+              inputs:
+                filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-jobs.sh'
+                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resouceGroupName) $(databricksWorkspaceName)'
+                workingDirectory: '$(Pipeline.Workspace)/jobs'
