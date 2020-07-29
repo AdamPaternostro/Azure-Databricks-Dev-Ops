@@ -184,6 +184,24 @@ This will show you how to deploy your Databricks assests via Azure Dev Ops Pipel
 - Re-run the pipeline and the Notebook should be pushed to Dev, QA and Prod
 
 
+## Important Details
+- In the Test-DevOps-Job-Interactive-Cluster.json, note the code ```"existing_cluster_id": "Small"```.  The existing cluster id says "Small" which is NOT an actual cluster id.  It is actually the name field in teh small-cluster.json (```"cluster_name": "Small",```).  During deployment the deploy-jobs.sh will lookup the **existing_cluster_id** value in the **name** field and populate the jobs JSON with the correct Databricks cluster id.
+   ```
+   {
+      "name": "Test-DevOps-Job-Interactive-Cluster",
+      "existing_cluster_id": "Small",
+      "email_notifications": {},
+      "timeout_seconds": 0,
+      "notebook_task": {
+         "notebook_path": "/MyProject/Pop vs. Price SQL.sql",
+         "revision_timestamp": 0
+      },
+      "max_concurrent_runs": 1
+   }
+   ```
+- You do not need to use the Resource Groups names with just a suffic of "-Dev", "-QA" or "-Prod", you can edit the azure-pipelines.yml to make these values whatever you like.
+      
+
 ## Notes
 - You can used your own KeyVault
   - The DevOps service principal just needs access to read the keys.
@@ -201,3 +219,4 @@ This will show you how to deploy your Databricks assests via Azure Dev Ops Pipel
 - Deal with deploying Hive/Metastore table changes/scripts
 - Deal with deploying Mount Points.  
    - Most customers run a Notebook (one time) and then delete it.
+- You can deploy your Databricks to a VNET.  See here for how to update the include Databricks ARM template ([Link](https://github.com/Azure/azure-quickstart-templates/blob/master/101-databricks-all-in-one-template-for-vnet-injection/azuredeploy.jsong "Link"))
