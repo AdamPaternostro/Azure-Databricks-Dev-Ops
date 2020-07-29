@@ -42,66 +42,78 @@ echo "Databricks workspaceUrl: $workspaceUrl"
 
 
 ######################################################################################
-# Create path
-######################################################################################
-
-# This is only creating one path (not a nested set of paths)
-JSON="{ \"path\" : \"$notebookPathUnderWorkspace\" }"
-echo "Creating Path: $JSON"
-   
-echo "curl https://$workspaceUrl/api/2.0/workspace/mkdirs -d $clusterId"
-
-curl -X POST https://$workspaceUrl/api/2.0/workspace/mkdirs \
-    -H "Authorization:Bearer $accessToken" \
-    -H "X-Databricks-Azure-SP-Management-Token: $managementToken" \
-    -H "X-Databricks-Azure-Workspace-Resource-Id: $resourceId" \
-    -H "Content-Type: application/json" \
-    --data "$JSON"
-
-
-######################################################################################
-# Deploy notebooks
+# Recusively Create Paths 
 ######################################################################################
 replaceSource="./"
 replaceDest=""
 
-find . -type f -name "*" -print0 | while IFS= read -r -d '' file; do
-    echo "Processing file: $file"
-    filename=${file//$replaceSource/$replaceDest}
-    echo "New filename: $filename"
+find . -type d -name "*" -print0 | while IFS= read -r -d '' dirPath; do
+    echo "Processing directory: $dirPath"
+    directoryName=${dirPath//$replaceSource/$replaceDest}
+    echo "New directoryName: $directoryName"
 
-    language=""
-    if [[ "$filename" == *sql ]]
+    if [[ "$dirPath" = "." ]];
     then
-        language="SQL"
+        pathOnDatabricks=$notebookPathUnderWorkspace
+    else
+        pathOnDatabricks="$notebookPathUnderWorkspace/$directoryName"
     fi
+    echo "pathOnDatabricks: $pathOnDatabricks"
 
-    if [[ "$filename" == *scala ]]
-    then
-        language="SCALA"
-    fi
+    JSON="{ \"path\" : \"$pathOnDatabricks\" }"
+    echo "Creating Path: $JSON"
+    
+    echo "curl https://$workspaceUrl/api/2.0/workspace/mkdirs -d $clusterId --data $JSON"
 
-    if [[ "$filename" == *py ]]
-    then
-        language="PYTHON"
-    fi
-
-    if [[ "$filename" == *r ]]
-    then
-        language="R"
-    fi
-
-    echo "curl -F language=$language -F path=$notebookPathUnderWorkspace/$filename -F content=@$filename https://$workspaceUrl/api/2.0/workspace/import"
-
-    curl -n https://$workspaceUrl/api/2.0/workspace/import \
+    curl -X POST https://$workspaceUrl/api/2.0/workspace/mkdirs \
         -H "Authorization:Bearer $accessToken" \
         -H "X-Databricks-Azure-SP-Management-Token: $managementToken" \
         -H "X-Databricks-Azure-Workspace-Resource-Id: $resourceId" \
-        -F language="$language" \
-        -F overwrite=true \
-        -F path="$notebookPathUnderWorkspace/$filename" \
-        -F content=@"$filename"       
-
-    echo ""
-
+        -H "Content-Type: application/json" \
+        --data "$JSON"
 done
+
+######################################################################################
+# Deploy notebooks (resursively)
+######################################################################################
+
+    find $dirPath -type f -name "*" -print0 | while IFS= read -r -d '' file; do
+        echo "Processing file: $file"
+        filename=${file//$replaceSource/$replaceDest}
+        echo "New filename: $filename"
+
+        language=""
+        if [[ "$filename" == *sql ]]
+        then
+            language="SQL"
+        fi
+
+        if [[ "$filename" == *scala ]]
+        then
+            language="SCALA"
+        fi
+
+        if [[ "$filename" == *py ]]
+        then
+            language="PYTHON"
+        fi
+
+        if [[ "$filename" == *r ]]
+        then
+            language="R"
+        fi
+
+        echo "curl -F language=$language -F path=$notebookPathUnderWorkspace/$filename -F content=@$file https://$workspaceUrl/api/2.0/workspace/import"
+
+        curl -n https://$workspaceUrl/api/2.0/workspace/import \
+            -H "Authorization:Bearer $accessToken" \
+            -H "X-Databricks-Azure-SP-Management-Token: $managementToken" \
+            -H "X-Databricks-Azure-Workspace-Resource-Id: $resourceId" \
+            -F language="$language" \
+            -F overwrite=true \
+            -F path="$notebookPathUnderWorkspace/$filename" \
+            -F content=@"$file"       
+
+        echo ""
+
+    done

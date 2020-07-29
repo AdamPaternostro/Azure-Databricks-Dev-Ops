@@ -185,6 +185,19 @@ This will show you how to deploy your Databricks assests via Azure Dev Ops Pipel
 
 
 ## Important Details
+- The deployment scripts expect to have their working directory set to be in the folder with the artifacts (e.g. if deploying jobs then run from jobs folder)
+   - You can run via command line locall to test
+   ```
+   cd ./Azure-Databricks-Dev-Ops/notebooks/MyProject  (You need to change this to your path)
+   ../../deployment-scripts/deploy-notebooks.sh \
+      '00000000-0000-0000-0000-000000000000 (tenant id)' \
+      '00000000-0000-0000-0000-000000000000 (client id)' \
+      '... (client secret)' \
+      '00000000-0000-0000-0000-000000000000 (subscription id)' \
+      'Databricks-MyProject-Dev' \
+      'Databricks-MyProject-Dev' 
+      '/ProjectFolder'   
+   ```
 - In the Test-DevOps-Job-Interactive-Cluster.json, note the code ```"existing_cluster_id": "Small"```.  The existing cluster id says "Small" which is NOT an actual cluster id.  It is actually the name field in teh small-cluster.json (```"cluster_name": "Small",```).  During deployment the deploy-jobs.sh will lookup the **existing_cluster_id** value in the **name** field and populate the jobs JSON with the correct Databricks cluster id.
    ```
    {
@@ -211,6 +224,7 @@ This will show you how to deploy your Databricks assests via Azure Dev Ops Pipel
 
 
 ## Potential Improvements
+- This does not deleted items removed from source control from the Databricks workspace.  At the end of each script you would need to add code to get a list of items and then remove any that are no longer under source control.
 - Have the dev ops pipeline test for the existance of a KeyVault if you want to eliminate the Mode parameter (Intialize-KeyVault | Databricks)
 - Seperate the tasks into another repo and call then from this pipeline.  This would make the tasks more re-useable, especially accross many differnet Git repos.  
    - See https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#use-other-repositories
@@ -220,3 +234,4 @@ This will show you how to deploy your Databricks assests via Azure Dev Ops Pipel
 - Deal with deploying Mount Points.  
    - Most customers run a Notebook (one time) and then delete it.
 - You can deploy your Databricks to a VNET.  See here for how to update the include Databricks ARM template ([Link](https://github.com/Azure/azure-quickstart-templates/blob/master/101-databricks-all-in-one-template-for-vnet-injection/azuredeploy.jsong "Link"))
+- The Bash scripts could be re-written in PowerShell Core for users who are more familiar with PowerShell.
