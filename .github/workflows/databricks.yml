@@ -27,6 +27,15 @@ jobs:
           dir env:
         azPSVersion: '3.1.0'
 
+    # Show the Home directory
+    - name: Display Environment Home
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          dir $GITHUB_WORKSPACE
+        azPSVersion: '3.1.0'
+
+
     # Publish Artifact: ARM-Templates
     - name: 'Publish Artifact: ARM-Templates' 
       uses: actions/upload-artifact@v2
