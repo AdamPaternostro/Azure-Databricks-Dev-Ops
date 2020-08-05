@@ -41,4 +41,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: 'ARM-Templates'
-        path: '$GITHUB_WORKSPACE/ARM-Templates'           
+        path: '$GITHUB_WORKSPACE/ARM-Templates/'           
