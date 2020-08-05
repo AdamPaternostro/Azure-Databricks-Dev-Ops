@@ -16,7 +16,8 @@ jobs:
 
     # Checkout code
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
     # Show the environment variables for debuggin
     - name: Display Environment Variable
