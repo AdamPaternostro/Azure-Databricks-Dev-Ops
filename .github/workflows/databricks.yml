@@ -1,7 +1,6 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Databricks-CI-CD
 
+# Manual trigger with parameters
 on:
   workflow_dispatch:
     inputs:
@@ -11,19 +10,25 @@ on:
         default: 'notebooks/MyProject'
            
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    # Checkout code
     steps:
     - uses: actions/checkout@v2
 
+    # Show the environment variables for debuggin
     - name: Display Environment Variable
       uses: azure/powershell@v1
       with:
         inlineScript: |
           dir env:
         azPSVersion: '3.1.0'
+
+    # Publish Artifact: ARM-Templates
+    - name: 'Publish Artifact: ARM-Templates' 
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'ARM-Templates'
+        path: '$HOME/ARM-Templates'           
