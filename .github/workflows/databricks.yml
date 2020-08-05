@@ -11,6 +11,11 @@ on:
            
 
 jobs:
+  #############################################################
+  # Builds the code
+  # Currently this is not building and JAR files, but you would do that here
+  # This is packaging up the files from Git to the Artifacts files
+  #############################################################
   build:
     runs-on: ubuntu-latest
 
@@ -19,7 +24,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # Show the environment variables for debuggin
+    # Show the environment variables for debugging
     - name: Display Environment Variable
       uses: azure/powershell@v1
       with:
@@ -32,4 +37,39 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: 'ARM-Templates'
-        path: '${{ github.workspace }}/ARM-Templates'           
+        path: '${{ github.workspace }}/ARM-Templates'
+
+    # Publish Artifact: Databricks-Clusters
+    - name: 'Publish Artifact: Databricks-Clusters' 
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'clusters'
+        path: '${{ github.workspace }}/clusters'
+
+    # Publish Artifact: Databricks-Notebooks
+    - name: 'Publish Artifact: Databricks-Notebooks' 
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'notebooks'
+        path: '${{ github.workspace }}/notebooks'
+
+    # Publish Artifact: Databricks-Jobs
+    - name: 'Publish Artifact: Databricks-Jobs' 
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'jobs'
+        path: '${{ github.workspace }}/jobs'
+
+    # Publish Artifact: Databricks-Init-Scripts
+    - name: 'Publish Artifact: Databricks-Init-Scripts' 
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'init-scripts'
+        path: '${{ github.workspace }}/init-scripts'
+
+    # Publish Artifact: ARM-Templates
+    - name: 'Publish Artifact: Databricks-Deployment-Scripts' 
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'deployment-scripts'
+        path: '${{ github.workspace }}/deployment-scripts'                                
