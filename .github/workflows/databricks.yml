@@ -20,7 +20,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/upload-artifact@v2
+
+    - name: Display Environment Variable
+      uses: azure/powershell@v1
       with:
-        name: my-artifact
-        path: path/to/artifact/world.txt    
+        inlineScript: |
+          dir env:
+        azPSVersion: '3.1.0'
