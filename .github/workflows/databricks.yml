@@ -211,6 +211,10 @@ jobs:
         databricksWorkspaceName: '${{ github.event.inputs.WORKSPACE_NAME }}-Dev'
         keyVaultName: '${{ github.event.inputs.KEY_VAULT_NAME }}-Dev'
 
+    - name: Display structure of downloaded files
+      run: ls -R
+      working-directory: ${{ github.workspace }}
+
     - name: Deploy ARM Template
       uses: azure/CLI@v1
       with:
