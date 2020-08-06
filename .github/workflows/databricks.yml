@@ -141,37 +141,43 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: 'ARM-Templates'
+        path: ${{ github.workspace }}/ARM-Templates
 
     # Download Artifact: Databricks-Clusters
     - name: 'Download Artifact: Databricks-Clusters' 
       uses: actions/download-artifact@v2
       with:
         name: 'clusters'
+        path: ${{ github.workspace }}/clusters
 
     # Download Artifact: Databricks-Notebooks
     - name: 'Download Artifact: Databricks-Notebooks' 
       uses: actions/download-artifact@v2
       with:
         name: 'notebooks'
+        path: ${{ github.workspace }}/notebooks
 
     # Download Artifact: Databricks-Jobs
     - name: 'Download Artifact: Databricks-Jobs' 
       uses: actions/download-artifact@v2
       with:
         name: 'jobs'
+        path: ${{ github.workspace }}/jobs
 
     # Download Artifact: Databricks-Init-Scripts
     - name: 'Download Artifact: Databricks-Init-Scripts' 
       uses: actions/download-artifact@v2
       with:
         name: 'init-scripts'
-
+        path: ${{ github.workspace }}/init-scripts
+        
     # Login to Azure
     - name: Login via Az module
       uses: azure/login@v1.1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-        enable-AzPSSession: true 
+        # set this if you will be using PowerShell
+        # enable-AzPSSession: true 
 
     - name: Set environment variable with the "-Dev" "Environment"
       uses: allenevans/set-env@v1.0.0
