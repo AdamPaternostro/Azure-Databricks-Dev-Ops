@@ -151,6 +151,10 @@ jobs:
   dev:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      resourceGroupName: '${{ github.event.inputs.RESOURCE_GROUP }}-Dev'
+      databricksWorkspaceName: '${{ github.event.inputs.WORKSPACE_NAME }}-Dev'
+      keyVaultName: '${{ github.event.inputs.KEY_VAULT_NAME }}-Dev'
 
     steps:
     # Show the environment variables for debugging
@@ -203,13 +207,6 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         # set this if you will be using PowerShell
         # enable-AzPSSession: true 
-
-    - name: Set environment variable with the "-Dev" "Environment"
-      uses: allenevans/set-env@v1.0.0
-      with:
-        resourceGroupName: '${{ github.event.inputs.RESOURCE_GROUP }}-Dev'
-        databricksWorkspaceName: '${{ github.event.inputs.WORKSPACE_NAME }}-Dev'
-        keyVaultName: '${{ github.event.inputs.KEY_VAULT_NAME }}-Dev'
 
     - name: Deploy ARM Template
       uses: azure/CLI@v1
