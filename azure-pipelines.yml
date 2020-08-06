@@ -35,7 +35,7 @@ parameters:
   - EastUS2
   - Add-others-here
 
-# This is the name of your Azure Databricks resrouce
+# This is the name of your Azure Databricks resource
 - name: WORKSPACE_NAME
   displayName: Databricks workspace name
   type: string
