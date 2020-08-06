@@ -207,7 +207,7 @@ jobs:
     - name: Set environment variable with the "-Dev" "Environment"
       uses: allenevans/set-env@v1.0.0
       with:
-        resouceGroupName: '${{ github.event.inputs.RESOURCE_GROUP }}-Dev'
+        resourceGroupName: '${{ github.event.inputs.RESOURCE_GROUP }}-Dev'
         databricksWorkspaceName: '${{ github.event.inputs.WORKSPACE_NAME }}-Dev'
         keyVaultName: '${{ github.event.inputs.KEY_VAULT_NAME }}-Dev'
 
@@ -221,7 +221,7 @@ jobs:
         inlineScript: |
           az deployment group create \
           --name "Deploy-Databricks-Workspace" \
-          --resource-group "$resouceGroupName" \
+          --resource-group "$resourceGroupName" \
           --template-file "${{ github.workspace }}/ARM-Templates/azuredeploy.databricks.json" \
-          --parameters -workspaceName "$databricksWorkspaceName" \
+          --parameters "{ \"workspaceName\": { \"value\": \"$databricksWorkspaceName"\" } }" \
           --mode Incremental

@@ -134,7 +134,7 @@ stages:
     displayName: 'Job Dev'
     environment: 'Dev'
     variables:
-      resouceGroupName: '${{ parameters.RESOURCE_GROUP }}-Dev'
+      resourceGroupName: '${{ parameters.RESOURCE_GROUP }}-Dev'
       databricksWorkspaceName: '${{ parameters.WORKSPACE_NAME }}-Dev'
       keyVaultName: '${{ parameters.KEY_VAULT_NAME }}-Dev'
 
@@ -164,7 +164,7 @@ stages:
                 azureResourceManagerConnection: ${{ parameters.RESOURCE_MANAGER_CONNECTION}}
                 subscriptionId: ${{ parameters.SUBSCRIPTION_ID }}
                 action: 'Create Or Update Resource Group'
-                resourceGroupName: $(resouceGroupName)
+                resourceGroupName: $(resourceGroupName)
                 location: ${{ parameters.LOCATION }}
                 templateLocation: 'Linked artifact'
                 csmFile: '$(Pipeline.Workspace)/ARM-Templates/azuredeploy.databricks.json'
@@ -181,7 +181,7 @@ stages:
                 azureResourceManagerConnection: ${{ parameters.RESOURCE_MANAGER_CONNECTION}}
                 subscriptionId: ${{ parameters.SUBSCRIPTION_ID }}
                 action: 'Create Or Update Resource Group'
-                resourceGroupName: $(resouceGroupName)
+                resourceGroupName: $(resourceGroupName)
                 location: ${{ parameters.LOCATION }}
                 templateLocation: 'Linked artifact'
                 csmFile: '$(Pipeline.Workspace)/ARM-Templates/azuredeploy.keyvault.json'
@@ -207,7 +207,7 @@ stages:
               # condition: ne($(databricks-dev-ops-tenant-id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
               inputs:
                 filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-init-scripts.sh'
-                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resouceGroupName) $(databricksWorkspaceName)'
+                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resourceGroupName) $(databricksWorkspaceName)'
                 workingDirectory: '$(Pipeline.Workspace)/init-scripts'
 
             ### Deploy your Databricks Clusters (and then Stop them since a deployment starts them) ###
@@ -218,7 +218,7 @@ stages:
               # condition: ne($(databricks-dev-ops-tenant-id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
               inputs:
                 filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-clusters.sh'
-                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resouceGroupName) $(databricksWorkspaceName)'
+                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resourceGroupName) $(databricksWorkspaceName)'
                 workingDirectory: '$(Pipeline.Workspace)/clusters'
 
             ### Deploy your Databricks Notebooks ###
@@ -229,7 +229,7 @@ stages:
               # condition: ne($(databricks-dev-ops-tenant-id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
               inputs:
                 filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-notebooks.sh'
-                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resouceGroupName) $(databricksWorkspaceName) ${{ parameters.NOTEBOOK_DEPLOYMENT_PATH }}'
+                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resourceGroupName) $(databricksWorkspaceName) ${{ parameters.NOTEBOOK_DEPLOYMENT_PATH }}'
                 workingDirectory: '$(Pipeline.Workspace)/${{ parameters.GIT_NOTEBOOK_PATH }}'
 
             ### Deploy your Databricks Jobs ###
@@ -240,7 +240,7 @@ stages:
               # condition: ne($(databricks-dev-ops-tenant-id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
               inputs:
                 filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-jobs.sh'
-                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resouceGroupName) $(databricksWorkspaceName)'
+                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resourceGroupName) $(databricksWorkspaceName)'
                 workingDirectory: '$(Pipeline.Workspace)/jobs'
 
 
@@ -253,7 +253,7 @@ stages:
     displayName: 'Job QA'
     environment: 'QA'
     variables:
-      resouceGroupName: '${{ parameters.RESOURCE_GROUP }}-QA'
+      resourceGroupName: '${{ parameters.RESOURCE_GROUP }}-QA'
       databricksWorkspaceName: '${{ parameters.WORKSPACE_NAME }}-QA'
       keyVaultName: '${{ parameters.KEY_VAULT_NAME }}-QA'
 
@@ -283,7 +283,7 @@ stages:
                 azureResourceManagerConnection: ${{ parameters.RESOURCE_MANAGER_CONNECTION}}
                 subscriptionId: ${{ parameters.SUBSCRIPTION_ID }}
                 action: 'Create Or Update Resource Group'
-                resourceGroupName: $(resouceGroupName)
+                resourceGroupName: $(resourceGroupName)
                 location: ${{ parameters.LOCATION }}
                 templateLocation: 'Linked artifact'
                 csmFile: '$(Pipeline.Workspace)/ARM-Templates/azuredeploy.databricks.json'
@@ -300,7 +300,7 @@ stages:
                 azureResourceManagerConnection: ${{ parameters.RESOURCE_MANAGER_CONNECTION}}
                 subscriptionId: ${{ parameters.SUBSCRIPTION_ID }}
                 action: 'Create Or Update Resource Group'
-                resourceGroupName: $(resouceGroupName)
+                resourceGroupName: $(resourceGroupName)
                 location: ${{ parameters.LOCATION }}
                 templateLocation: 'Linked artifact'
                 csmFile: '$(Pipeline.Workspace)/ARM-Templates/azuredeploy.keyvault.json'
@@ -326,7 +326,7 @@ stages:
               # condition: ne($(databricks-dev-ops-tenant-id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
               inputs:
                 filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-init-scripts.sh'
-                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resouceGroupName) $(databricksWorkspaceName)'
+                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resourceGroupName) $(databricksWorkspaceName)'
                 workingDirectory: '$(Pipeline.Workspace)/init-scripts'
 
             ### Deploy your Databricks Clusters (and then Stop them since a deployment starts them) ###
@@ -337,7 +337,7 @@ stages:
               # condition: ne($(databricks-dev-ops-tenant-id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
               inputs:
                 filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-clusters.sh'
-                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resouceGroupName) $(databricksWorkspaceName)'
+                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resourceGroupName) $(databricksWorkspaceName)'
                 workingDirectory: '$(Pipeline.Workspace)/clusters'
 
             ### Deploy your Databricks Notebooks ###
@@ -348,7 +348,7 @@ stages:
               # condition: ne($(databricks-dev-ops-tenant-id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
               inputs:
                 filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-notebooks.sh'
-                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resouceGroupName) $(databricksWorkspaceName) ${{ parameters.NOTEBOOK_DEPLOYMENT_PATH }}'
+                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resourceGroupName) $(databricksWorkspaceName) ${{ parameters.NOTEBOOK_DEPLOYMENT_PATH }}'
                 workingDirectory: '$(Pipeline.Workspace)/${{ parameters.GIT_NOTEBOOK_PATH }}'
 
             ### Deploy your Databricks Jobs ###
@@ -359,7 +359,7 @@ stages:
               # condition: ne($(databricks-dev-ops-tenant-id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
               inputs:
                 filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-jobs.sh'
-                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resouceGroupName) $(databricksWorkspaceName)'
+                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resourceGroupName) $(databricksWorkspaceName)'
                 workingDirectory: '$(Pipeline.Workspace)/jobs'
 
 
@@ -372,7 +372,7 @@ stages:
     displayName: 'Job Prod'
     environment: 'Prod'
     variables:
-      resouceGroupName: '${{ parameters.RESOURCE_GROUP }}-Prod'
+      resourceGroupName: '${{ parameters.RESOURCE_GROUP }}-Prod'
       databricksWorkspaceName: '${{ parameters.WORKSPACE_NAME }}-Prod'
       keyVaultName: '${{ parameters.KEY_VAULT_NAME }}-Prod'
 
@@ -402,7 +402,7 @@ stages:
                 azureResourceManagerConnection: ${{ parameters.RESOURCE_MANAGER_CONNECTION}}
                 subscriptionId: ${{ parameters.SUBSCRIPTION_ID }}
                 action: 'Create Or Update Resource Group'
-                resourceGroupName: $(resouceGroupName)
+                resourceGroupName: $(resourceGroupName)
                 location: ${{ parameters.LOCATION }}
                 templateLocation: 'Linked artifact'
                 csmFile: '$(Pipeline.Workspace)/ARM-Templates/azuredeploy.databricks.json'
@@ -419,7 +419,7 @@ stages:
                 azureResourceManagerConnection: ${{ parameters.RESOURCE_MANAGER_CONNECTION}}
                 subscriptionId: ${{ parameters.SUBSCRIPTION_ID }}
                 action: 'Create Or Update Resource Group'
-                resourceGroupName: $(resouceGroupName)
+                resourceGroupName: $(resourceGroupName)
                 location: ${{ parameters.LOCATION }}
                 templateLocation: 'Linked artifact'
                 csmFile: '$(Pipeline.Workspace)/ARM-Templates/azuredeploy.keyvault.json'
@@ -445,7 +445,7 @@ stages:
               # condition: ne($(databricks-dev-ops-tenant-id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
               inputs:
                 filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-init-scripts.sh'
-                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resouceGroupName) $(databricksWorkspaceName)'
+                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resourceGroupName) $(databricksWorkspaceName)'
                 workingDirectory: '$(Pipeline.Workspace)/init-scripts'
 
             ### Deploy your Databricks Clusters (and then Stop them since a deployment starts them) ###
@@ -456,7 +456,7 @@ stages:
               # condition: ne($(databricks-dev-ops-tenant-id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
               inputs:
                 filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-clusters.sh'
-                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resouceGroupName) $(databricksWorkspaceName)'
+                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resourceGroupName) $(databricksWorkspaceName)'
                 workingDirectory: '$(Pipeline.Workspace)/clusters'
 
             ### Deploy your Databricks Notebooks ###
@@ -467,7 +467,7 @@ stages:
               # condition: ne($(databricks-dev-ops-tenant-id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
               inputs:
                 filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-notebooks.sh'
-                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resouceGroupName) $(databricksWorkspaceName) ${{ parameters.NOTEBOOK_DEPLOYMENT_PATH }}'
+                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resourceGroupName) $(databricksWorkspaceName) ${{ parameters.NOTEBOOK_DEPLOYMENT_PATH }}'
                 workingDirectory: '$(Pipeline.Workspace)/${{ parameters.GIT_NOTEBOOK_PATH }}'
 
             ### Deploy your Databricks Jobs ###
@@ -478,5 +478,5 @@ stages:
               # condition: ne($(databricks-dev-ops-tenant-id), 'PLEASE_SET_ME (e.g. 00000000-0000-0000-0000-000000000000)')
               inputs:
                 filePath: '$(Pipeline.Workspace)/deployment-scripts/deploy-jobs.sh'
-                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resouceGroupName) $(databricksWorkspaceName)'
+                arguments: '$(databricks-dev-ops-tenant-id) $(databricks-dev-ops-client-id) $(databricks-dev-ops-client-secret) $(databricks-dev-ops-subscription-id) $(resourceGroupName) $(databricksWorkspaceName)'
                 workingDirectory: '$(Pipeline.Workspace)/jobs'
