@@ -219,7 +219,7 @@ jobs:
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          ls -R  ${{ github.workspace }}
+          ls -R 
           az deployment group create \
           --name "Deploy-Databricks-Workspace" \
           --resource-group "$resourceGroupName" \
