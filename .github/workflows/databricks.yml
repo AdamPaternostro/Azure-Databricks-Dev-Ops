@@ -193,7 +193,7 @@ jobs:
         inlineScript: |
           az deployment group create \
           --name 'Deploy-Databricks-Workspace' \
-          --resource-group '$(resouceGroupName)'' \
+          --resource-group '$(resouceGroupName)' \
           --template-file '${{ github.workspace }}/ARM-Templates/azuredeploy.databricks.json' \
           --parameters '-workspaceName $(databricksWorkspaceName)' \
           --mode Incremental
