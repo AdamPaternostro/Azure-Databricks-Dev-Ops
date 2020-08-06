@@ -208,9 +208,26 @@ jobs:
         # set this if you will be using PowerShell
         # enable-AzPSSession: true 
 
+    # Deploy Databricks Workspace
     - name: Deploy ARM Template
       uses: azure/CLI@v1
       with:
         inlineScript: |
           az group create --location "${{ github.event.inputs.LOCATION }}" --name "${{ env.resourceGroupName }}"
           az deployment group create --resource-group ${{ env.resourceGroupName }} --template-file $GITHUB_WORKSPACE/ARM-Templates/azuredeploy.databricks.json --parameters @$GITHUB_WORKSPACE/ARM-Templates/parameters.databricks.json --parameters workspaceName="${{ env.databricksWorkspaceName }}"
+
+    # Download KeyVault Secrets
+    - name: Download KeyVault Secrets
+      uses: Azure/get-keyvault-secrets@v1.0
+      with:
+        keyvault: "my
+        Vault"
+        secrets: 'databricks-dev-ops-subscription-id,databricks-dev-ops-tenant-id,databricks-dev-ops-client-id,databricks-dev-ops-client-secret'
+      id: databricksSecretAction
+
+    # Deploy your Databricks Init Scripts to dbfa:/init-scripts folder on DBFS
+    - name:  Deploy your Databricks Init Scripts to dbfa:/init-scripts folder on DBFS
+      if: ${{ github.event.inputs.MODE == 'Databricks' }}
+      run: |
+      cd '$GITHUB_WORKSPACE/init-scripts'
+      .$GITHUB_WORKSPACE/deployment-scripts/deploy-init-scripts.sh ${{ steps.databricksSecretAction.outputs.databricks-dev-ops-tenant-id }} ${{ steps.databricksSecretAction.outputs.databricks-dev-ops-client-id }} ${{ steps.databricksSecretAction.outputs.databricks-dev-ops-client-secret }} ${{ steps.databricksSecretAction.outputs.databricks-dev-ops-subscription-id }} ${{ steps.databricksSecretAction.outputs.resourceGroupName }} ${{ steps.databricksSecretAction.outputs.databricksWorkspaceName }}
