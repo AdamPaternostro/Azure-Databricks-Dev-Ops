@@ -211,18 +211,14 @@ jobs:
         databricksWorkspaceName: '${{ github.event.inputs.WORKSPACE_NAME }}-Dev'
         keyVaultName: '${{ github.event.inputs.KEY_VAULT_NAME }}-Dev'
 
-    - name: Display structure of downloaded files
-      run: ls -R
-      working-directory: ${{ github.workspace }}
-
     - name: Deploy ARM Template
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          ls -R 
+          # ls -R 
           az deployment group create \
           --name "Deploy-Databricks-Workspace" \
           --resource-group "$resourceGroupName" \
-          --template-file "${{ github.workspace }}/ARM-Templates/azuredeploy.databricks.json" \
+          --template-file "./ARM-Templates/azuredeploy.databricks.json" \
           --parameters "{ \"workspaceName\": { \"value\": \"$databricksWorkspaceName"\" } }" \
           --mode Incremental
