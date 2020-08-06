@@ -149,7 +149,7 @@ jobs:
 # Deploy to Dev
 #############################################################
   Dev:
-    needs: build
+    needs: Build
     runs-on: ubuntu-latest
     env:
       resourceGroupName: '${{ github.event.inputs.RESOURCE_GROUP }}-Dev'
@@ -279,7 +279,7 @@ jobs:
 # Deploy to QA
 #############################################################
   QA:
-    needs: build
+    needs: Dev
     runs-on: ubuntu-latest
     env:
       resourceGroupName: '${{ github.event.inputs.RESOURCE_GROUP }}-QA'
@@ -409,7 +409,7 @@ jobs:
 # Deploy to Prod
 #############################################################
   Prod:
-    needs: build
+    needs: QA
     runs-on: ubuntu-latest
     env:
       resourceGroupName: '${{ github.event.inputs.RESOURCE_GROUP }}-QA'
