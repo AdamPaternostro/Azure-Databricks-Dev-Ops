@@ -166,35 +166,30 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: 'ARM-Templates'
-        path: ${{ github.workspace }}/ARM-Templates
 
     # Download Artifact: Databricks-Clusters
     - name: 'Download Artifact: Databricks-Clusters' 
       uses: actions/download-artifact@v2
       with:
         name: 'clusters'
-        path: ${{ github.workspace }}/clusters
 
     # Download Artifact: Databricks-Notebooks
     - name: 'Download Artifact: Databricks-Notebooks' 
       uses: actions/download-artifact@v2
       with:
         name: 'notebooks'
-        path: ${{ github.workspace }}/notebooks
 
     # Download Artifact: Databricks-Jobs
     - name: 'Download Artifact: Databricks-Jobs' 
       uses: actions/download-artifact@v2
       with:
         name: 'jobs'
-        path: ${{ github.workspace }}/jobs
 
     # Download Artifact: Databricks-Init-Scripts
     - name: 'Download Artifact: Databricks-Init-Scripts' 
       uses: actions/download-artifact@v2
       with:
         name: 'init-scripts'
-        path: ${{ github.workspace }}/init-scripts
         
     # Login to Azure
     - name: Login via Az module
@@ -213,7 +208,6 @@ jobs:
 
     - name: Display structure of downloaded files
       run: ls -R
-      working-directory: ${{ github.workspace }}
 
     - name: Deploy ARM Template
       uses: azure/CLI@v1
@@ -222,6 +216,6 @@ jobs:
           az deployment group create \
           --name "Deploy-Databricks-Workspace" \
           --resource-group "$resourceGroupName" \
-          --template-file "${{ github.workspace }}/ARM-Templates/azuredeploy.databricks.json" \
-          --parameters "{ \"workspaceName\": { \"value\": \"$databricksWorkspaceName\" } }" \
+          --template-file "./ARM-Templates/azuredeploy.databricks.json" \
+          --parameters "{ \"workspaceName\": { \"value\": \"$databricksWorkspaceName"\" } }" \
           --mode Incremental
