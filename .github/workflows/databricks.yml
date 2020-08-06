@@ -223,5 +223,5 @@ jobs:
           --name "Deploy-Databricks-Workspace" \
           --resource-group "$resourceGroupName" \
           --template-file "${{ github.workspace }}/ARM-Templates/azuredeploy.databricks.json" \
-          --parameters "{ \"workspaceName\": { \"value\": \"$databricksWorkspaceName"\" } }" \
+          --parameters "{ \"workspaceName\": { \"value\": \"$databricksWorkspaceName\" } }" \
           --mode Incremental
