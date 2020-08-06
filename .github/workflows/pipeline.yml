@@ -57,7 +57,7 @@ on:
       WORKSPACE_NAME:
         description: 'Databricks workspace name'
         required: true
-        default: 'Databricks workspace name'
+        default: 'Databricks-MyProject'
 
       # This is a KeyVault for holding the Service Principal to make Databricks API calls and to hold Databricks KeyVault backed Secrets
       KEY_VAULT_NAME:
