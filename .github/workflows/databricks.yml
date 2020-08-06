@@ -134,6 +134,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    steps:
     # Show the environment variables for debugging
     - name: Display Environment Variable
       uses: azure/powershell@v1
