@@ -215,9 +215,5 @@ jobs:
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          az deployment group create \
-          --name "Deploy-Databricks-Workspace" \
-          --resource-group "$resourceGroupName" \
-          --template-file "./ARM-Templates/azuredeploy.databricks.json" \
-          --parameters "{ \"workspaceName\": { \"value\": \"$databricksWorkspaceName"\" } }" \
-          --mode Incremental
+          az group create --location ${{ github.event.inputs.LOCATION }} --name ${{ env.resourceGroupName }}   
+          az group deployment create --resource-group ${{ env.resourceGroupName }} --template-file $GITHUB_WORKSPACE/ARM-Templates/azuredeploy.databricks.json  --parameters "{ \"workspaceName\": { \"value\": \"$databricksWorkspaceName"\" } }"
