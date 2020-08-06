@@ -220,7 +220,7 @@ jobs:
     - name: Download KeyVault Secrets
       uses: Azure/get-keyvault-secrets@v1.0
       with:
-        keyvault: ${{ github.event.inputs.KEY_VAULT_NAME }}
+        keyvault: ${{ env.keyVaultName }}
         secrets: 'databricks-dev-ops-subscription-id,databricks-dev-ops-tenant-id,databricks-dev-ops-client-id,databricks-dev-ops-client-secret'
       id: databricksSecretAction
 
