@@ -213,4 +213,4 @@ jobs:
       with:
         inlineScript: |
           az group create --location "${{ github.event.inputs.LOCATION }}"" --name "${{ env.resourceGroupName }}"
-          az group deployment create --resource-group "${{ env.resourceGroupName }}"" --template-file "$GITHUB_WORKSPACE/ARM-Templates/azuredeploy.databricks.json" --parameters "{\"workspaceName\":{\"value\":\"${{ env.resourceGroupName.databricksWorkspaceName }}\"}}"
+          az group deployment create --resource-group "${{ env.resourceGroupName }}"" --template-file "$GITHUB_WORKSPACE/ARM-Templates/azuredeploy.databricks.json" --parameters "{\"workspaceName\":{\"value\":\"${{ env.databricksWorkspaceName }}\"}}"
