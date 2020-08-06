@@ -199,6 +199,13 @@ jobs:
       with:
         name: 'init-scripts'
         path: ${{ github.workspace }}/init-scripts
+
+    # Download Artifact: Deployment Scripts
+    - name: 'Download Artifact: Deployment Scripts' 
+      uses: actions/download-artifact@v2
+      with:
+        name: 'deployment-scripts'
+        path: ${{ github.workspace }}/deployment-scripts
         
     # Login to Azure
     - name: Login via Az module
