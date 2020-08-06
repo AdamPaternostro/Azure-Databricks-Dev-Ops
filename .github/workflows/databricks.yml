@@ -47,13 +47,6 @@ on:
         required: true
         default: '00000000-0000-0000-0000-000000000000'
 
-      # NOTE: You could make this a variable and then change the name to append the environment parameter above.  You would need to create a corrisponding service connection
-      # e.g. If you connection is named "MyConnection", you would have MyConnection-Dev (for dev subscription), MyConnection-QA (etc...)
-      RESOURCE_MANAGER_CONNECTION:
-        description: 'Azure Resource Connection Name'
-        required: true
-        default: 'Microsoft Azure Adam Paternostro(00000000-0000-0000-0000-000000000000)'
-
       # Inialize the system
       # Note: We only want to run the KeyVault ARM template once.  If you keep re-running, then you will OVERWRITE your values
       MODE:
