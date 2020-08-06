@@ -1,3 +1,27 @@
+# Note
+# This assumes you have a secret named "AZURE_CREDENTIALS" in GitHub
+# To create the service principal run:
+#   az ad sp create-for-rbac --name "ServicePrincipalGitHubAction" --role contributor \
+#    --scopes /subscriptions/{subscription id REPLACE}/resourceGroups/Databricks-MyProject-Dev \
+#    --sdk-auth  
+#   You will then need to add this service principal access to the "-QA" and "-Prod" resource groups
+# If you have a service principal, the this is your secret, just update the values
+#    {
+#      "clientId": "REPLACE:00000000-0000-0000-0000-000000000000",
+#      "clientSecret": "REPLACE: YOUR PASSWORD/SECRET",
+#      "subscriptionId": "REPLACE:00000000-0000-0000-0000-000000000000",
+#      "tenantId": "REPLACE:00000000-0000-0000-0000-000000000000",
+#      "activeDirectoryEndpointUrl": "https://login.microsoftonline.com",
+#      "resourceManagerEndpointUrl": "https://management.azure.com/",
+#      "activeDirectoryGraphResourceId": "https://graph.windows.net/",
+#      "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/",
+#      "galleryEndpointUrl": "https://gallery.azure.com/",
+#      "managementEndpointUrl": "https://management.core.windows.net/"
+#    }
+# One secret named is used for all 3 environment (dev,QA,prod).
+#   If you want to have 3 secrets (one for each environemnt)then you need to change the line of code:
+#   creds: ${{ secrets.AZURE_CREDENTIALS }} to creds: '${{ secrets.AZURE_CREDENTIALS }}-Dev' (-QA, -Prod)
+
 name: Databricks-CI-CD
 
 # Manual trigger with parameters
@@ -125,6 +149,7 @@ jobs:
 # Deploy to Dev
 #############################################################
   dev:
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
