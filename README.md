@@ -3,7 +3,7 @@ Complete end to end sample of doing DevOps with Azure Databricks.  This is based
 
 This will show you how to deploy your Databricks assests via Azure Dev Ops Pipelines so that your Notebooks, Clusters, Jobs and Init Scipts are automatically deployed and configured per environment.
 
-[![Actions Status](https://github.com/AdamPaternopstro/Azure-Databricks-Dev-Ops/workflows/Databricks-CI-CD/badge.svg)](https://github.com/AdamPaternostro/Azure-Databricks-Dev-Ops/actions)
+[![Actions Status](https://github.com/AdamPaternostro/Azure-Databricks-Dev-Ops/workflows/Databricks-CI-CD/badge.svg)](https://github.com/AdamPaternostro/Azure-Databricks-Dev-Ops/actions)
 
 ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/Databricks-Dev-Ops.gif)
 
