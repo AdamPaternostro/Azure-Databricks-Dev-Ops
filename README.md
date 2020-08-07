@@ -1,7 +1,7 @@
 # Azure-Databricks-Dev-Ops
 Complete end to end sample of doing DevOps with Azure Databricks.  This is based on working with lots of customers who have requested that they can reference a documented apporach. The included code utilizes KeyVault for each environement and uses Azure AD authorization tokens to call the Databricks REST API.
 
-This will show you how to deploy your Databricks assests via Azure Dev Ops Pipelines so that your Notebooks, Clusters, Jobs and Init Scipts are automatically deployed and configured per environment.
+This will show you how to deploy your Databricks assests via **GitHub Actions** and **Azure Dev Ops Pipelines** so that your Notebooks, Clusters, Jobs and Init Scipts are automatically deployed and configured per environment.
 
 [![Actions Status](https://github.com/AdamPaternostro/Azure-Databricks-Dev-Ops/workflows/Databricks-CI-CD/badge.svg)](https://github.com/AdamPaternostro/Azure-Databricks-Dev-Ops/actions)
 
@@ -18,6 +18,83 @@ This will show you how to deploy your Databricks assests via Azure Dev Ops Pipel
          - Databricks-MyProject-Prod
       - Grant the service principal to the Contributor role to each Resource Group
 
+## Using GitHub Actions
+- Clone this repo to your GitHub 
+- Click on Settings | Secrets and create a secret named: AZURE_CREDENTIALS
+  - Add this values of your Service Principal 
+    ```
+    {
+      "clientId": "REPLACE:00000000-0000-0000-0000-000000000000",
+      "clientSecret": "REPLACE: YOUR PASSWORD/SECRET",
+      "subscriptionId": "REPLACE:00000000-0000-0000-0000-000000000000",
+      "tenantId": "REPLACE:00000000-0000-0000-0000-000000000000",
+      "activeDirectoryEndpointUrl": "https://login.microsoftonline.com",
+      "resourceManagerEndpointUrl": "https://management.azure.com/",
+      "activeDirectoryGraphResourceId": "https://graph.windows.net/",
+      "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/",
+      "galleryEndpointUrl": "https://gallery.azure.com/",
+      "managementEndpointUrl": "https://management.core.windows.net/"
+    }
+    ```
+- Click on ```Actions``` and click ```Databricks-CI-CD``` and click  ```Run workflow```
+   - Fill in the fields (only **bold** are not the defaults)
+      - Notebooks Relative Path in Git: ```notebooks/MyProject```
+      - Notebooks Deployment Path to Databricks: ```/MyProject```
+      - Resource Group Name: ```Databricks-MyProject``` (NOTE: "-Dev" will be appended)
+      - Azure Region: ```EastUS2```
+      - Databricks workspace name: ```Databricks-MyProject```
+      - KeyVault name: ```KeyVault-MyProject```
+      - Azure Subscription Id: **replace this ```00000000-0000-0000-0000-000000000000```**
+      - Deployment Mode: **```Initialize KeyVault```**
+      - Click "Run workflow"
+
+  - The pipeline will create 3 Azure resource groups
+    ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/DeployedResourceGroups.png)
+  - The pipeline will create 3 Databricks workspaces
+  - The pipeline will create 3 Azure KeyVaults (you can use your own KeyVault, see later in this document)
+  - In the Azure Portal
+     - Go to the KeyVault created in each Azure resource group (repeat this for Dev, QA, Prod)
+     - Click on Access Policies
+         - NOTE: You might have to wait a few minutes to add the policies, mine gave a error at first and then was okay.
+         - Click ```Add Access Policy```
+            - Configure from template: ```Secret Management```
+            - Key Permissions ```0 Selected``` 
+            - Secret Permissions ```2 Selected``` (select just Get and List)
+            - Certificate Permissions ```0 Selected``` 
+            - Select your Azure Pipeline Service Principal (you can enter the Client ID (Guid) in the search box)
+            - Click Add
+            - Click Save
+         - Repeat the above steps and add yourself as a Full Secret management.  You need to add yourself so you can set the secrets. 
+            - Select the template ```Secret Management```
+            - **Leave** all the Secret Permissions selected
+            - Select yourself as the Principal
+            - Click Add
+            - Click Save
+     - Click on Secrets
+       - Click Generate / Import
+       - You should see 4 secrets: 
+          - databricks-dev-ops-subscription-id
+          - databricks-dev-ops-tenant-id
+          - databricks-dev-ops-client-id
+          - databricks-dev-ops-client-secret
+       - You need to set these values.  These values for a Service Principal that will call over to the Databricks workspace to authenicate to the Databricks REST API.
+          - Option 1 (Create a new service principal)
+          - Option 2 (Use the same DevOps service principal)
+          - In either case you need to make the service principal a **contributor** of the Databricks workspace or a **contributor** in the resource group in which the workspace resides.  You need to set this in Azure.
+       - Click on each secret and click "New Version" and set the secret value
+          - databricks-dev-ops-subscription-id: ```00000000-0000-0000-0000-000000000000```
+          - databricks-dev-ops-tenant-id: ```00000000-0000-0000-0000-000000000000```
+          - databricks-dev-ops-client-id: ```00000000-0000-0000-0000-000000000000```
+          - databricks-dev-ops-client-secret: ```some crazy string```
+
+- Re-run the pipeline 
+   - Set the parameters
+       - Azure Subscription Id: **replace this ```00000000-0000-0000-0000-000000000000```**
+       - Deployment Mode: **```Databricks```**  (this is the default, so you really do not need to select it)
+   - The pipeline should now deploy your Databricks artifacts  
+
+
+## Using Azure DevOps Pipeline
 - Create an Azure Dev Ops project
 - Click on the Repo icon on the left menu 
   - Select "Import" 
@@ -117,7 +194,7 @@ You shoudl set approvals on each environment so the pipeline does not deploy to 
   - Click on Approvals
   - Select a user or group that can approve the deployment to the environment
 
-## What Happens during the Pipeline
+## What Happens during the Pipeline (GitHub Actions / Azure Pipeline)
 I typically use the same exact name for each of my Azure resources for each of my environments.  I simply append a "-Environment (Dev, QA, Prod)" to make my deployments easy to author in my pipelines.  I always suggust an easy naming standard per environment to make your DevOps code easy to write.
 - Azure Resource Groups are created (if they do not exist)
   - The Dev  stage creates a resouce group named "Databricks-MyProject-Dev"
