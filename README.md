@@ -7,9 +7,14 @@ This will show you how to deploy your Databricks assests via **GitHub Actions** 
 
 ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/Databricks-Dev-Ops.gif)
 
-## Overview Video
+## Videos
 ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/YouTube.png)
-[Click for Video](https://youtu.be/j20dsqomkJE "YouTube")
+| Description  |  URL |
+|:-------------|:------|
+| Overview of the Databricks DevOps solution | [Right click here and Open Link in New Tab](https://youtu.be/j20dsqomkJE "YouTube") |
+
+
+
 
 ## How to deploy this in your subscription
 - Create a service principal that will be used for your DevOps pipeline.
