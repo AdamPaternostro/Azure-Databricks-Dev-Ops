@@ -335,8 +335,11 @@ I typically use the same exact name for each of my Azure resources for each of m
   - The above pipeline does not deploy Hive tables.
   - You could deploy a notebook with you Hive CREATE tables in the notebook and then execute the notebook
 - Deal with deploying Mount Points.  
-   - Most customers tha use mount ponits will run a Notebook, one time, and then delete it.  This configures the mount points and then the notebook is deleted to hide the secrets.
-- Databricks does not have a REST API to configure Azure KeyVault to be the backing store of your Databricks Secrets.  When there is one, this should be updated to include a sample.   
+  - Most customers tha use mount ponits will run a Notebook, one time, and then delete it.  This configures the mount points and then the notebook is deleted to hide the secrets.
+- Databricks does not have a REST API to configure Azure KeyVault to be the backing store of your Databricks Secrets. 
+  - https://docs.microsoft.com/en-us/azure/databricks/security/secrets/secret-scopes#--create-an-azure-key-vault-backed-secret-scope
+  - When there is one, this should be updated to include a sample.   
+  - You could try using a Selenium Task to automate a browser experience
 - You can deploy your Databricks to a VNET.  See here for how to update the include Databricks ARM template ([Link](https://github.com/Azure/azure-quickstart-templates/blob/master/101-databricks-all-in-one-template-for-vnet-injection/azuredeploy.jsong "Link"))
 - The Bash scripts could be re-written in PowerShell Core for users who are more familiar with PowerShell.
 
