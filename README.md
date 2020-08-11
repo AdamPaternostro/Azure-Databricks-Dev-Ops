@@ -16,6 +16,9 @@ This will show you how to deploy your Databricks assests via **GitHub Actions** 
 | Initialize Azure with KeyVault and Secrets using the GitHub Action | [Right click here and Open Link in New Tab](https://youtu.be/yLTcIOC3BLo "YouTube") |
 | Deploy your Databricks artifacts using the GitHub Action | [Right click here and Open Link in New Tab](https://youtu.be/f17xTjKQidg "YouTube") |
 | Detailed Deployment Review of GitHub Action and Git Setup | [Right click here and Open Link in New Tab](https://youtu.be/gY0qHisct0E "YouTube") |
+|Configuring GitHub Integration with Databricks | [Right click here and Open Link in New Tab](https://youtu.be/CUi5XABYLyc "YouTube") |
+
+
 
 
 ## How to deploy this in your subscription
