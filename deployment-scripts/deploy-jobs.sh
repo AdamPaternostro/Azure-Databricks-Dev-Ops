@@ -58,7 +58,7 @@ echo "Databricks workspaceUrl: $workspaceUrl"
 
 
 ######################################################################################
-# Deploy clusters (Add or Update existing)
+# Deploy jobs (Add or Update existing)
 ######################################################################################
 
 replaceSource="./"
