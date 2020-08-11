@@ -12,6 +12,7 @@ This will show you how to deploy your Databricks assests via **GitHub Actions** 
 | Description  |  URL |
 |:-------------|:------|
 | Overview of the Databricks DevOps solution | [Right click here and Open Link in New Tab](https://youtu.be/j20dsqomkJE "YouTube") |
+| Setting up a Service Principal in Azure and then configuring for GitHub Action and Azure DevOps Pipeline | [Right click here and Open Link in New Tab](https://youtu.be/lWA2Q26zhV4 "YouTube") |
 
 
 
@@ -58,7 +59,7 @@ This will show you how to deploy your Databricks assests via **GitHub Actions** 
       - Click "Run workflow"
 
   - The pipeline will create 3 Azure resource groups
-    ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/DeployedResourceGroups.png)
+    - ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/DeployedResourceGroups.png)
   - The pipeline will create 3 Databricks workspaces
   - The pipeline will create 3 Azure KeyVaults (you can use your own KeyVault, see later in this document)
   - In the Azure Portal
@@ -149,7 +150,7 @@ This will show you how to deploy your Databricks assests via **GitHub Actions** 
 
   - The pipeline will create 3 environment Dev, QA, Prod in Azure DevOps
   - The pipeline will create 3 Azure resource groups
-    ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/DeployedResourceGroups.png)
+    - ![alt tag](https://raw.githubusercontent.com/AdamPaternostro/Azure-Databricks-Dev-Ops/master/images/DeployedResourceGroups.png)
   - The pipeline will create 3 Databricks workspaces
   - The pipeline will create 3 Azure KeyVaults (you can use your own KeyVault, see later in this document)
   - In the Azure Portal
