@@ -13,9 +13,7 @@ This will show you how to deploy your Databricks assests via **GitHub Actions** 
 |:-------------|:------|
 | Overview of the Databricks DevOps solution | [Right click here and Open Link in New Tab](https://youtu.be/j20dsqomkJE "YouTube") |
 | Setting up a Service Principal in Azure and then configuring for GitHub Action and Azure DevOps Pipeline | [Right click here and Open Link in New Tab](https://youtu.be/lWA2Q26zhV4 "YouTube") |
-
-
-
+| Initialize Azure with KeyVault and Secrets using the GitHub Action | [Right click here and Open Link in New Tab](https://youtu.be/yLTcIOC3BLo "YouTube") |
 
 ## How to deploy this in your subscription
 - Create a service principal that will be used for your DevOps pipeline.
@@ -53,7 +51,7 @@ This will show you how to deploy your Databricks assests via **GitHub Actions** 
       - Resource Group Name: ```Databricks-MyProject``` (NOTE: "-Dev" will be appended)
       - Azure Region: ```EastUS2```
       - Databricks workspace name: ```Databricks-MyProject```
-      - KeyVault name: ```KeyVault-MyProject```
+      - KeyVault name: ```KeyVault-MyProject``` ** NOTE: You need to put a 1 or 2, etc on the end of this to make it globally unique**
       - Azure Subscription Id: **replace this ```00000000-0000-0000-0000-000000000000```**
       - Deployment Mode: **```Initialize KeyVault```**
       - Click "Run workflow"
@@ -136,7 +134,7 @@ This will show you how to deploy your Databricks assests via **GitHub Actions** 
        - Resource Group Name: ```Databricks-MyProject``` (NOTE: "-Dev" will be appended)
        - Azure Region: ```EastUS2```
        - Databricks workspace name: ```Databricks-MyProject```
-       - KeyVault name: ```KeyVault-MyProject```
+       - KeyVault name: ```KeyVault-MyProject``` ** NOTE: You need to put a 1 or 2, etc on the end of this to make it globally unique**
        - Azure Subscription Id: **replace this ```00000000-0000-0000-0000-000000000000```**
        - Azure Resource Connection Name: **```DatabricksDevOpsConnection```**
        - Deployment Mode: **```Initialize KeyVault```**
