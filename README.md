@@ -50,6 +50,7 @@ This will show you how to deploy your Databricks assests via **GitHub Actions** 
       "managementEndpointUrl": "https://management.core.windows.net/"
     }
     ```
+- NOTE: When you click on actions you will not see the action if you forked/cloned this repo.  I have requested the ability to "import" an existing action.  For now you need to create a new action (blank one) and then copy the YAML from the .github/workflows/pipeline.yml file.  
 - Click on ```Actions``` and click ```Databricks-CI-CD``` and click  ```Run workflow```
    - Fill in the fields (only **bold** are not the defaults)
       - Notebooks Relative Path in Git: ```notebooks/MyProject```
