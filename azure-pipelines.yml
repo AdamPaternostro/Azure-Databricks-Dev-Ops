@@ -189,7 +189,7 @@ stages:
                 overrideParameters: '-keyVaultName $(keyVaultName)'
                 deploymentMode: 'Incremental'
 
-            ### Download KeyVault Secrests ###
+            ### Download KeyVault Secrets ###
             - task: AzureKeyVault@1
               condition: eq('${{ parameters.MODE }}', 'Databricks')
               displayName: "Download KeyVault Secrets"
@@ -308,7 +308,7 @@ stages:
                 overrideParameters: '-keyVaultName $(keyVaultName)'
                 deploymentMode: 'Incremental'
 
-            ### Download KeyVault Secrests ###
+            ### Download KeyVault Secrets ###
             - task: AzureKeyVault@1
               condition: eq('${{ parameters.MODE }}', 'Databricks')
               displayName: "Download KeyVault Secrets"
@@ -427,7 +427,7 @@ stages:
                 overrideParameters: '-keyVaultName $(keyVaultName)'
                 deploymentMode: 'Incremental'
 
-            ### Download KeyVault Secrests ###
+            ### Download KeyVault Secrets ###
             - task: AzureKeyVault@1
               condition: eq('${{ parameters.MODE }}', 'Databricks')
               displayName: "Download KeyVault Secrets"
