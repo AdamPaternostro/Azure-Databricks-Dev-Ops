@@ -338,6 +338,7 @@ I typically use the same exact name for each of my Azure resources for each of m
   - I know there are some DevOps Marketplace items that will deploy Notebooks, etc.  The reason for this is that customers have had issues with the CLI installing on top of one another and their DevOps pipelines break.  The Databricks REST API calls are simple and installing the CLI adds a dependency which could break.
 - To get the JSON to deploy, you can use the script ```Sample-REST-API-To-Databricks.sh``` to call the ```List``` operation to get existing items from a workspace.  If you create a new Job in Databricks, then run this script calling the ```jobs/list``` to grab the JSON to place in source control. 
 
+
 ## Potential Improvements
 - This does not deleted items removed from source control from the Databricks workspace.  At the end of each script you would need to add code to get a list of items and then remove any that are no longer under source control.
 - Change pipeline test for the existance of a KeyVault if you want to eliminate the Mode parameter (Intialize-KeyVault | Databricks).  If the KeyVault exists, then just skip the KeyVault ARM template task.
@@ -358,3 +359,12 @@ I typically use the same exact name for each of my Azure resources for each of m
 - You can deploy your Databricks to a VNET.  See here for how to update the include Databricks ARM template ([Link](https://github.com/Azure/azure-quickstart-templates/blob/master/101-databricks-all-in-one-template-for-vnet-injection/azuredeploy.jsong "Link"))
 - The Bash scripts could be re-written in PowerShell Core for users who are more familiar with PowerShell.
 
+## What about Data Thrist and Azure Docs
+- Some people have asked if they should use Data Thrist from the Azure Dev Ops marketplace
+   - https://marketplace.visualstudio.com/items?itemName=DataThirstLtd.databricksDeployScriptsTasks
+   - If this works for you then it is a good choice.
+   - I prefer the Databricks REST API calls since I can use Azure Dev Ops Pipelines or GitHub Actions
+- What about this advice on Azure Docs: https://docs.microsoft.com/en-us/azure/databricks/dev-tools/ci-cd/ci-cd-azure-devops
+   - Great reading around packaging up a Python library and deploying to a cluster
+   - If you prefer Python versus Bash "deployment-scripts" then grab these for your DevOps
+   - I like how they do a test and ingest the results back into Azure Dev Ops
