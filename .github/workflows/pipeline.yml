@@ -152,6 +152,7 @@ jobs:
     needs: Build
     runs-on: ubuntu-latest
     env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
       resourceGroupName: '${{ github.event.inputs.RESOURCE_GROUP }}-Dev'
       databricksWorkspaceName: '${{ github.event.inputs.WORKSPACE_NAME }}-Dev'
       keyVaultName: '${{ github.event.inputs.KEY_VAULT_NAME }}-Dev'
@@ -282,6 +283,7 @@ jobs:
     needs: Dev
     runs-on: ubuntu-latest
     env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
       resourceGroupName: '${{ github.event.inputs.RESOURCE_GROUP }}-QA'
       databricksWorkspaceName: '${{ github.event.inputs.WORKSPACE_NAME }}-QA'
       keyVaultName: '${{ github.event.inputs.KEY_VAULT_NAME }}-QA'
@@ -412,6 +414,7 @@ jobs:
     needs: QA
     runs-on: ubuntu-latest
     env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
       resourceGroupName: '${{ github.event.inputs.RESOURCE_GROUP }}-Prod'
       databricksWorkspaceName: '${{ github.event.inputs.WORKSPACE_NAME }}-Prod'
       keyVaultName: '${{ github.event.inputs.KEY_VAULT_NAME }}-Prod'
