@@ -59,7 +59,8 @@ jobs:
   #############################################################
   approved:
    if: github.event.review.state == 'approved'
-   runs-on: ubuntu-latest
+   Build:
+    runs-on: ubuntu-latest
 
     # Checkout code
     steps:
