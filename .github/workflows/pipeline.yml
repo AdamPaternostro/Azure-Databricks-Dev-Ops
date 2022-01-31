@@ -52,14 +52,11 @@ env:
 
 
 jobs:
-  #############################################################
-  # Builds the code
-  # Currently this is not building and JAR files, but you would do that here
-  # This is packaging up the files from Git to the Artifacts files
-  #############################################################
-  Build:
-   if: github.event.review.state == 'approved'
-   runs-on: ubuntu-latest
+ approved:
+  if: github.event.review.state == 'approved'
+
+   Build:
+     runs-on: ubuntu-latest
     
     # Checkout code
      steps:
