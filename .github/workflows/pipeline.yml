@@ -51,15 +51,18 @@ env:
   MODE: 'Databricks'
 
 
+  #############################################################
+  # Builds the code
+  # Currently this is not building and JAR files, but you would do that here
+  # This is packaging up the files from Git to the Artifacts files
+  #############################################################
 jobs:
- approved:
-  if: github.event.review.state == 'approved'
+  Build:
+    if: github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
 
-   Build:
-     runs-on: ubuntu-latest
-    
     # Checkout code
-     steps:
+    steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
@@ -112,6 +115,7 @@ jobs:
       with:
         name: 'deployment-scripts'
         path: '${{ github.workspace }}/deployment-scripts'                                
+                             
 
 
 #############################################################
