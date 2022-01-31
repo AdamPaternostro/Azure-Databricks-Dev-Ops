@@ -28,6 +28,8 @@ name: Databricks-CI-CD
 on:
   pull_request_review:
     types: [submitted]
+  branches:    
+      - 'master/**'
       
 env:
   # This is the path of your notebooks in Git.  Currently, this is not recursively deploying notebooks
@@ -57,9 +59,7 @@ jobs:
   #############################################################
   approved:
   if: github.event.review.state == 'approved'
-  
-  Build:
-    runs-on: ubuntu-latest
+  runs-on: ubuntu-latest
 
     # Checkout code
     steps:
