@@ -58,8 +58,8 @@ jobs:
   # This is packaging up the files from Git to the Artifacts files
   #############################################################
   approved:
-  if: github.event.review.state == 'approved'
-  runs-on: ubuntu-latest
+   if: github.event.review.state == 'approved'
+   runs-on: ubuntu-latest
 
     # Checkout code
     steps:
