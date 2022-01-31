@@ -57,10 +57,9 @@ jobs:
   # Currently this is not building and JAR files, but you would do that here
   # This is packaging up the files from Git to the Artifacts files
   #############################################################
-  approved:
-   if: github.event.review.state == 'approved'
-   Build:
+  Build:
     runs-on: ubuntu-latest
+    if: github.event.review.state == 'approved'
 
     # Checkout code
     steps:
