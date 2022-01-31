@@ -27,8 +27,9 @@ name: Databricks-CI-CD
 # Runs the workflow when the pull request is approved
 on:
   pull_request_review:
-    types: [submitted]
-  branches:    
+    types: 
+      - submitted
+    branches:    
       - 'master'
       
 env:
