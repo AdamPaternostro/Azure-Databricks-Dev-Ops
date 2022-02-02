@@ -126,9 +126,9 @@ jobs:
     needs: Build
     runs-on: ubuntu-latest
     env:
-      resourceGroupName: '${{ env.RESOURCE_GROUP }}-Dev'
-      databricksWorkspaceName: '${{ env.WORKSPACE_NAME }}-Dev'
-      keyVaultName: '${{ env.KEY_VAULT_NAME }}-Dev'
+      resourceGroupName: 'Databricks-MyProject-Dev'
+      databricksWorkspaceName: 'Databricks-MyProject-Dev'
+      keyVaultName: 'KeyVault-MyProject2-Dev'
 
     steps:
     # Show the environment variables for debugging
@@ -256,9 +256,9 @@ jobs:
     needs: Dev
     runs-on: ubuntu-latest
     env:
-      resourceGroupName: '${{ env.RESOURCE_GROUP }}-QA'
-      databricksWorkspaceName: '${{ env.WORKSPACE_NAME }}-QA'
-      keyVaultName: '${{ env.KEY_VAULT_NAME }}-QA'
+      resourceGroupName: 'Databricks-MyProject-QA'
+      databricksWorkspaceName: 'Databricks-MyProject-QA'
+      keyVaultName: 'KeyVault-MyProject2-QA'
 
     steps:
     # Show the environment variables for debugging
@@ -386,9 +386,9 @@ jobs:
     needs: QA
     runs-on: ubuntu-latest
     env:
-      resourceGroupName: '${{ env.RESOURCE_GROUP }}-Prod'
-      databricksWorkspaceName: '${{ env.WORKSPACE_NAME }}-Prod'
-      keyVaultName: '${{ env.KEY_VAULT_NAME }}-Prod'
+      resourceGroupName: 'Databricks-MyProject-Prod'
+      databricksWorkspaceName: 'Databricks-MyProject-Prod'
+      keyVaultName: 'KeyVault-MyProject2-Prod'
 
     steps:
     # Show the environment variables for debugging
