@@ -126,6 +126,7 @@ jobs:
     needs: Build
     runs-on: ubuntu-latest
     env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS=true
       resourceGroupName: 'Databricks-MyProject-Dev'
       databricksWorkspaceName: 'Databricks-MyProject-Dev'
       keyVaultName: 'KeyVault-MyProject2-Dev'
@@ -256,6 +257,7 @@ jobs:
     needs: Dev
     runs-on: ubuntu-latest
     env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS=true
       resourceGroupName: 'Databricks-MyProject-QA'
       databricksWorkspaceName: 'Databricks-MyProject-QA'
       keyVaultName: 'KeyVault-MyProject2-QA'
@@ -386,6 +388,7 @@ jobs:
     needs: QA
     runs-on: ubuntu-latest
     env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS=true
       resourceGroupName: 'Databricks-MyProject-Prod'
       databricksWorkspaceName: 'Databricks-MyProject-Prod'
       keyVaultName: 'KeyVault-MyProject2-Prod'
